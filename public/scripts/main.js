@@ -21,8 +21,9 @@ function setUpMessageInput() {
 
 function setUpMessageViewer () {
   ws.onmessage = (msg) => {
-    let msgView = document.querySelector('#message-viewer').value;
-    document.querySelector('#message-viewer').value = `${msgView}\n${msg.data}`;
+    const viewer = document.querySelector('#message-viewer');
+    viewer.value = (viewer.value) ? `${viewer.value}\n${msg.data}` : msg.data;
+    console.log(msg);
   }
 }
 
