@@ -1,4 +1,37 @@
+body {
+  background-color: lightblue;
+  font-size: 16px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 2em;
+}
+
 #message-viewer {
+  margin: 0 auto;
+  overflow: auto;
   width: 215px;
   height: 220px;
+}
+
+.other-message {
+  text-align: left;
+  padding-left: 1em;
+}
+
+.own-message {
+  text-align: right;
+  padding-right: 1em;
+}
+
+[data-time]::before {
+  content: attr(data-time);
+  position: absolute;
+  right: 500px;
+  opacity: 0;
+}
+
+[data-time]:hover::before {
+  opacity: 1;
 }

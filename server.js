@@ -10,14 +10,15 @@ const app = express()
 
 const httpServer = http.createServer(app);
 
-const wss = new SocketServer({ 'server': httpServer });
+const wss = new SocketServer({'server': httpServer});
 wss.on('connection', (ws) => {
   console.log('client connected');
-  ws.on('message', (msgFromSomeUser) => {
+  ws.on('message', (msgString) => {
+    const msgObj = JSON.parse(msgString);
     console.log('received msg from client: ');
-    console.log(msgFromSomeUser);
+    console.log(msgObj);
     wss.clients.forEach(client => {
-      client.send(msgFromSomeUser);
+      client.send(msgString);
     });
   });
   ws.on('close', () => {
