@@ -1,6 +1,6 @@
 const express = require('express');
 const http = require('http');
-const SocketServer = require('ws').Server;
+const WebSocket = require('ws');
 const uniqid = require('uniqid');
 const bcrypt = require('bcrypt');
 
@@ -12,7 +12,7 @@ const app = express()
 
 const httpServer = http.createServer(app);
 
-const wss = new SocketServer({ 'server': httpServer });
+const wss = new WebSocket.Server({ 'server': httpServer });
 
 const publicUsersObj = { type: 'users', users: {} };
 
@@ -30,7 +30,9 @@ wss.on('connection', (ws) => {
   console.log(publicUsersObj);
   // give all clients updated publicUsersObj
   wss.clients.forEach(client => {
-    client.send(JSON.stringify(publicUsersObj));
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify(publicUsersObj));
+    }
   });
 
   ws.on('message', (msgString) => {
@@ -65,14 +67,18 @@ wss.on('connection', (ws) => {
       }
       publicUsersObj.users[ws.publicid] = msgObj.username;
       wss.clients.forEach(client => {
-        client.send(JSON.stringify(publicUsersObj));
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify(publicUsersObj));
+        }
       });
     }
     delete msgObj.privateid;
     msgObj.type = 'text';
     // broadcast msg to all clients
     wss.clients.forEach(client => {
-      client.send(JSON.stringify(msgObj));
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(msgObj));
+      }
     });
   });
 
@@ -82,7 +88,7 @@ wss.on('connection', (ws) => {
     delete publicUsersObj.users[ws.publicid];
     console.log(publicUsersObj);
     wss.clients.forEach(client => {
-      if (client.privateid !== ws.privateid) {
+      if (client.readyState === WebSocket.OPEN) {
         client.send(JSON.stringify(publicUsersObj));
       }
     });
