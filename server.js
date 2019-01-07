@@ -76,13 +76,15 @@ wss.on('connection', (ws) => {
     });
   });
 
-  ws.on('close', () => {
+  ws.on('close', (ws) => {
     console.log('client disconnected, publicid:');
     console.log(ws.publicid);
     delete publicUsersObj.users[ws.publicid];
     console.log(publicUsersObj);
     wss.clients.forEach(client => {
-      client.send(JSON.stringify(publicUsersObj));
+      if (client.privateid !== ws.privateid) {
+        client.send(JSON.stringify(publicUsersObj));
+      }
     });
   });
 });
