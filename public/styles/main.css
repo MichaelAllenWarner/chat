@@ -8,13 +8,18 @@ h1 {
   font-size: 2em;
 }
 
-#message-viewer {
+h2 {
+  font-size: 1.5em;
+}
+
+#message-viewer, #current-users {
   margin: 1em auto;
   overflow: auto;
-  width: 215px;
-  height: 220px;
+  width: 15em;
+  height: 20em;
   border: 1px solid black;
   resize: both;
+  display: inline-block;
 }
 
 .other-message {
@@ -29,17 +34,29 @@ h1 {
   color: blue;
 }
 
-/*
-trying to make timestamp appear as tooltip on hover:
-
-[data-time]::before {
-  content: attr(data-time);
+/*[data-time]::before {
+  content: "";
   position: absolute;
-  right: 500px;
+  right: 5px;
   opacity: 0;
 }
 
 [data-time]:hover::before {
+  content: attr(data-time);
   opacity: 1;
+  transition-duration: 1s;
+  transition-delay: .5s;
+}*/
+
+li {
+  text-align: left;
+  color: red;
 }
-*/
+
+li.own-user {
+  color: blue;
+}
+
+#error-message {
+  color: red;
+}

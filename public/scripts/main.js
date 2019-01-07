@@ -1,5 +1,6 @@
 const HOST = location.origin.replace(/^http/, 'ws');
 const ws = new WebSocket(HOST);
+const ids = {}; // one publicid, one privateid, server will send
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', setUpSubmitButton);
@@ -12,19 +13,20 @@ if (document.readyState === 'loading') {
 }
 
 function setUpSubmitButton() {
+  const messageInput = document.querySelector('#message-input');
+  const usernameBox = document.querySelector('#username');
   document.querySelector('#submit-button').addEventListener('click', () => {
-    const outgoingMsgObj = {
-      type: 'text',
-      user: document.querySelector('#username').value || 'An anonymous user',
-      time: Date.now(),
-      text: document.querySelector('#message-input').value
-    };
-
-    if (outgoingMsgObj.text) {
+    if (messageInput.value) {
+      const outgoingMsgObj = {
+        privateid: ids.privateid,
+        publicid: ids.publicid,
+        username: usernameBox.value,
+        time: Date.now(),
+        text: document.querySelector('#message-input').value
+      };
       ws.send(JSON.stringify(outgoingMsgObj));
+      document.querySelector('#message-input').value = '';
     }
-
-    document.querySelector('#message-input').value = '';
   });
 }
 
@@ -38,26 +40,57 @@ function setUpMessageInput() {
 
 function setUpWebSocketMsgReception () {
   ws.onmessage = (incomingMsgObj) => {
+    console.log(incomingMsgObj);
     const msgData = JSON.parse(incomingMsgObj.data);
 
-    if (msgData.type = 'text') {
-      processNewTextMsg(msgData);
+    switch (msgData.type) {
+      case 'error':
+        const errorP = document.querySelector('#error-message');
+        errorP.textContent = msgData.error;
+        break;
+      case 'ownids':
+        ids.publicid = msgData.yourPublicid;
+        ids.privateid = msgData.yourPrivateid;
+        break;
+      case 'users':
+        updateUsernamesList(msgData.users, ids.publicid);
+        break;
+      case 'text':
+        processNewTextMsg(msgData, ids.publicid);
+        break;
     }
 
-    function processNewTextMsg(msgData) {
+    function updateUsernamesList(usersObj, ownPublicid) {
+      const usernameList = document.querySelector('#usernames-list');
+      while (usernameList.firstChild) {
+        usernameList.removeChild(usernameList.firstChild);
+      }
+      for (const [publicid, username] of Object.entries(usersObj)) {
+        const usernameItem = document.createElement('li');
+        usernameItem.textContent = username || 'An anonymous user';
+        if (publicid === ownPublicid) {
+          usernameItem.textContent = `${username} (You)`;
+          usernameItem.classList.add('own-user');
+        }
+        usernameList.appendChild(usernameItem);
+      }
+    }
+
+    function processNewTextMsg(msgData, ownPublicid) {
       const viewer = document.querySelector('#message-viewer');
       const isScrolledDown = (viewer.scrollHeight - viewer.scrollTop <= viewer.clientHeight + 5);
 
-      const user = msgData.user;
+      const publicid = msgData.publicid;
+      const username = (publicid === ownPublicid) ? 'You'
+      : (!msgData.username) ? 'An anonymous user'
+      : msgData.username;
       const time = new Date(msgData.time);
       const text = msgData.text;
 
-      const ownUsername = document.querySelector('#username').value;
-      // FIXME: need foolproof way of distinguishing own message from other message
-      const msgUserClass = (user === ownUsername) ? 'own-message' : 'other-message';
+      const msgUserClass = (publicid === ownPublicid) ? 'own-message' : 'other-message';
 
       const newMsg = document.createElement ('p');
-      newMsg.textContent = `${user} said: ${text}`;
+      newMsg.textContent = `${username} said: ${text}`;
       newMsg.setAttribute('data-time', time);
       newMsg.classList.add(msgUserClass);
       viewer.appendChild(newMsg);
@@ -67,7 +100,11 @@ function setUpWebSocketMsgReception () {
         viewer.scrollTop = viewer.scrollHeight - viewer.clientHeight; 
       }
 
-      console.log(incomingMsgObj);
+      if (publicid === ownPublicid) {
+        const errorP = document.querySelector('#error-message');
+        errorP.textContent = '';
+      }
+
     }
   }
 }
