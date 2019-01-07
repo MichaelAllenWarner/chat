@@ -17,6 +17,8 @@ h2 {
   overflow: auto;
   width: 15em;
   height: 20em;
+  max-width: 45vw;
+  max-height:45vh;
   border: 1px solid black;
   resize: both;
   display: inline-block;
