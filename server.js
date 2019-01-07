@@ -76,7 +76,7 @@ wss.on('connection', (ws) => {
     });
   });
 
-  ws.on('close', (ws) => {
+  ws.on('close', () => {
     console.log('client disconnected, publicid:');
     console.log(ws.publicid);
     delete publicUsersObj.users[ws.publicid];
