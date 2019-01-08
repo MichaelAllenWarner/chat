@@ -13,10 +13,17 @@ const app = express()
 const httpServer = http.createServer(app);
 
 const wss = new WebSocket.Server({ 'server': httpServer });
+wss.broadcast = data => {
+  wss.clients.forEach(client => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(data);
+    }
+  });
+};
 
 const publicUsersObj = { type: 'users', users: {} };
 
-wss.on('connection', (ws) => {
+wss.on('connection', ws => {
   ws.publicid = uniqid();
   ws.privateid = bcrypt.hashSync(uniqid(), 0);
   publicUsersObj.users[ws.publicid] = '';
@@ -28,14 +35,9 @@ wss.on('connection', (ws) => {
   console.log('client connected, publicid:');
   console.log(ws.publicid);
   console.log(publicUsersObj);
-  // give all clients updated publicUsersObj
-  wss.clients.forEach(client => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify(publicUsersObj));
-    }
-  });
+  wss.broadcast(JSON.stringify(publicUsersObj));
 
-  ws.on('message', (msgString) => {
+  ws.on('message', msgString => {
     const msgObj = JSON.parse(msgString);
     console.log('received msg from client:');
     console.log(msgObj);
@@ -66,20 +68,11 @@ wss.on('connection', (ws) => {
         return;
       }
       publicUsersObj.users[ws.publicid] = msgObj.username;
-      wss.clients.forEach(client => {
-        if (client.readyState === WebSocket.OPEN) {
-          client.send(JSON.stringify(publicUsersObj));
-        }
-      });
+      wss.broadcast(JSON.stringify(publicUsersObj));
     }
     delete msgObj.privateid;
     msgObj.type = 'text';
-    // broadcast msg to all clients
-    wss.clients.forEach(client => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify(msgObj));
-      }
-    });
+    wss.broadcast(JSON.stringify(msgObj));
   });
 
   ws.on('close', () => {
@@ -87,11 +80,7 @@ wss.on('connection', (ws) => {
     console.log(ws.publicid);
     delete publicUsersObj.users[ws.publicid];
     console.log(publicUsersObj);
-    wss.clients.forEach(client => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify(publicUsersObj));
-      }
-    });
+    wss.broadcast(JSON.stringify(publicUsersObj));
   });
 });
 
