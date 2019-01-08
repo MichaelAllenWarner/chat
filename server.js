@@ -32,8 +32,7 @@ wss.on('connection', ws => {
     yourPublicid: ws.publicid,
     yourPrivateid: ws.privateid
   }));
-  console.log('client connected, publicid:');
-  console.log(ws.publicid);
+  console.log('client connected, publicid: ' + ws.publicid);
   console.log(publicUsersObj);
   wss.broadcast(JSON.stringify(publicUsersObj));
 
@@ -76,8 +75,7 @@ wss.on('connection', ws => {
   });
 
   ws.on('close', () => {
-    console.log('client disconnected, publicid:');
-    console.log(ws.publicid);
+    console.log('client disconnected, publicid: ' + ws.publicid);
     delete publicUsersObj.users[ws.publicid];
     console.log(publicUsersObj);
     wss.broadcast(JSON.stringify(publicUsersObj));
