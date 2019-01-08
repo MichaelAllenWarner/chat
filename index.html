@@ -12,16 +12,26 @@
 
 <h1>Mike's Chat App</h1>
 
-<label for="username">Username: </label><input id="username" type="text">
-<br>
-<div id="message-viewer"></div>
-<div id="current-users">
-  <h2>Current Users</h2>
-  <ul id="usernames-list"></ul>
+<div id="grid-wrapper">
+  <div id="messages-wrapper">
+    <h2>Chat Messages</h2>
+    <div id="messages-viewer">
+    </div>
+    <div id="input-bar">
+      <label for="message-input">Message: </label><input id="message-input" type="text">
+      <button id="submit-button">Submit</button>
+    </div>
+  </div>
+  <div id="users-wrapper">
+    <h2>Current Users</h2>
+    <div id="users-viewer">
+      <ul id="usernames-list"></ul>
+    </div>
+    <div id="username-bar">
+      <label for="username-input">Username: </label><input id="username-input" type="text">
+    </div>
+  </div>
 </div>
-<br>
-<input id="message-input" type="text">
-<button id="submit-button">Submit</button>
 <p id="error-message"></p>
 
 </body>

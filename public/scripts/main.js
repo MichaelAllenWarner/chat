@@ -5,16 +5,18 @@ const ids = {}; // one publicid, one privateid, server will send
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', setUpSubmitButton);
   document.addEventListener('DOMContentLoaded', setUpMessageInput);
+  document.addEventListener('DOMContentLoaded', setUpUsernameInput);
   document.addEventListener('DOMContentLoaded', setUpWebSocketMsgReception);
 } else {
   setUpSubmitButton();
   setUpMessageInput();
+  setUpUsernameInput();
   setUpWebSocketMsgReception();
 }
 
 function setUpSubmitButton() {
   const messageInput = document.querySelector('#message-input');
-  const usernameBox = document.querySelector('#username');
+  const usernameBox = document.querySelector('#username-input');
   document.querySelector('#submit-button').addEventListener('click', () => {
     if (messageInput.value) {
       const outgoingMsgObj = {
@@ -31,9 +33,18 @@ function setUpSubmitButton() {
 }
 
 function setUpMessageInput() {
-  document.querySelector('#message-input').addEventListener('keyup', function(event) {
+  document.querySelector('#message-input').addEventListener('keypress', function(event) {
     if (event.key === 'Enter') {
       document.querySelector('#submit-button').click();
+    }
+  });
+}
+
+function setUpUsernameInput() {
+  document.querySelector('#username-input').addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+      const errorP = document.querySelector('#error-message');
+      errorP.textContent = 'Submit a message to update your username.';
     }
   });
 }
@@ -77,7 +88,7 @@ function setUpWebSocketMsgReception () {
     }
 
     function processNewTextMsg(msgData, ownPublicid) {
-      const viewer = document.querySelector('#message-viewer');
+      const viewer = document.querySelector('#messages-viewer');
       const isScrolledDown = (viewer.scrollHeight - viewer.scrollTop <= viewer.clientHeight + 5);
 
       const publicid = msgData.publicid;
@@ -89,10 +100,15 @@ function setUpWebSocketMsgReception () {
 
       const msgUserClass = (publicid === ownPublicid) ? 'own-message' : 'other-message';
 
-      const newMsg = document.createElement ('p');
-      newMsg.textContent = `${username} said: ${text}`;
+      const newMsg = document.createElement('p');
+      const textNode = document.createTextNode(text);
+      const usernameSpan = document.createElement('span');
+      usernameSpan.textContent = `${username}: `;
+      usernameSpan.classList.add('username-prefix');
       newMsg.setAttribute('data-time', time);
       newMsg.classList.add(msgUserClass);
+      newMsg.appendChild(usernameSpan);
+      newMsg.appendChild(textNode);
       viewer.appendChild(newMsg);
 
       // scroll down only if already nearly scrolled down
