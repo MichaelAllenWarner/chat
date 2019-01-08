@@ -15,7 +15,7 @@ if (document.readyState === 'loading') {
 function setUpMessageInput() {
   const messageInput = document.querySelector('#message-input');
   const usernameInput = document.querySelector('#username-input');
-  messageInput.addEventListener('keypress', function(event) {
+  messageInput.addEventListener('keydown', function(event) {
     if (event.key === 'Enter' && this.value) {
       const outgoingMsgObj = {
         privateid: ids.privateid,
@@ -26,12 +26,13 @@ function setUpMessageInput() {
       };
       ws.send(JSON.stringify(outgoingMsgObj));
       this.value = '';
+      // this.blur(); want this for mobile maybe so that keyboard disappears
     }
   });
 }
 
 function setUpUsernameInput() {
-  document.querySelector('#username-input').addEventListener('keypress', function(event) {
+  document.querySelector('#username-input').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
       const errorMessage = document.querySelector('#error-message');
       errorMessage.textContent = 'Submit a message to update your username.';
