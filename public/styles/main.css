@@ -13,6 +13,10 @@ h2 {
   transition-duration: .25s;
 }
 
+input {
+  font-size: 16px;
+}
+
 #grid-wrapper {
   display: grid;
   margin: 0 auto;
@@ -116,7 +120,7 @@ li {
 
 @media screen and (max-width: 600px) {
   #grid-wrapper {
-    grid-template-columns: 100%;
+    grid-template-columns: 100%; /* make it auto-columns? */
     grid-template-rows: 60% 40%;
     grid-row-gap: 10px;
     width: 75vw;
@@ -144,7 +148,7 @@ li {
   #grid-wrapper {
     justify-content: center;
     grid-template-columns: 60% 40%;
-    grid-template-rows: 100%;
+    grid-template-rows: 100%; /* make it auto-rows? */
     grid-column-gap: 10px;
     width: 90vw;
     height: 70vh;
