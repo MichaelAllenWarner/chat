@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" type="text/css" href="styles/main.css" />
-  <script src="scripts/main.js"></script>
+  <script src="scripts/setup-websocket.js"></script>
 </head>
 
 <body>
@@ -24,7 +24,9 @@
   <div id="users-wrapper">
     <h2>Current Users</h2>
     <div id="users-viewer">
-      <ul id="usernames-list"></ul>
+      <ul id="usernames-list">
+        <li id="own-user">(You)</li>
+      </ul>
     </div>
     <div id="username-bar">
       <label for="username-input">Username: </label><input id="username-input" type="text">
@@ -33,5 +35,6 @@
 </div>
 <p id="error-message"></p>
 
+<script src="scripts/main.js"></script>
 </body>
 </html>
