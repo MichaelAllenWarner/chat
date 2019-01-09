@@ -5,12 +5,20 @@ const ids = {}; // one publicid, one privateid, server will send
 setUpMsgSending();
 setUpMsgReceiving();
 
+// scroll chat window down on window resize (not perfect but good for mobile)
+window.addEventListener('resize', () => {
+  const viewer = document.querySelector('#messages-viewer');
+  viewer.scrollTop = viewer.scrollHeight - viewer.clientHeight;
+});
+
 function setUpMsgSending() {
   const messageInput = document.querySelector('#message-input');
   const usernameInput = document.querySelector('#username-input');
 
   messageInput.addEventListener('keydown', sendMsgCallback());
   usernameInput.addEventListener('keydown', sendMsgCallback());
+
+  // should we allow line breaks within a message?
 
   function sendMsgCallback() {
     return event => {
@@ -105,10 +113,10 @@ function setUpMsgReceiving() {
         viewer.appendChild(newMsg);
       }
 
-      // scroll down only if already was nearly scrolled down, but on mobile should ALWAYS do it
-      // if (wasScrolledDown) {
+      // scroll down only if already was nearly scrolled down
+      if (wasScrolledDown) {
         viewer.scrollTop = viewer.scrollHeight - viewer.clientHeight; 
-      // }
+      }
 
       if (publicid === ownPublicid) {
         const errorP = document.querySelector('#error-message');
