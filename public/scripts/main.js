@@ -105,10 +105,10 @@ function setUpMsgReceiving() {
         viewer.appendChild(newMsg);
       }
 
-      // scroll down only if already was nearly scrolled down
-      if (wasScrolledDown) {
+      // scroll down only if already was nearly scrolled down, but on mobile should ALWAYS do it
+      // if (wasScrolledDown) {
         viewer.scrollTop = viewer.scrollHeight - viewer.clientHeight; 
-      }
+      // }
 
       if (publicid === ownPublicid) {
         const errorP = document.querySelector('#error-message');
