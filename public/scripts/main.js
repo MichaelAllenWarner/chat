@@ -34,7 +34,7 @@ function setUpMsgSending() {
           publicid: ids.publicid,
           username: usernameInput.value,
           time: Date.now(),
-          text: messageInput.value
+          text: messageInput.value.trimStart()
         };
         ws.send(JSON.stringify(outgoingMsgObj));
         messageInput.value = '';
@@ -96,7 +96,7 @@ function setUpMsgReceiving() {
       : (!msgData.username) ? 'An anonymous user'
       : msgData.username;
       const time = new Date(msgData.time);
-      const text = msgData.text;
+      const text = msgData.text.trimStart();
 
       if (text) {
         const newMsg = document.createElement('p');
