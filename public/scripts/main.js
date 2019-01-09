@@ -8,7 +8,9 @@ setUpMsgReceiving();
 // scroll chat window down on window resize (not perfect but good for mobile)
 window.addEventListener('resize', () => {
   const viewer = document.querySelector('#messages-viewer');
-  viewer.scrollTop = viewer.scrollHeight - viewer.clientHeight;
+  setTimeout(() => {
+    viewer.scrollTop = viewer.scrollHeight - viewer.clientHeight;
+  }, 500);
 });
 
 function setUpMsgSending() {
