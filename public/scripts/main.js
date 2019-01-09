@@ -38,7 +38,6 @@ function setUpMsgSending() {
         };
         ws.send(JSON.stringify(outgoingMsgObj));
         messageInput.value = '';
-        // blur() the messageInput on mobile?
       }
     }
   }

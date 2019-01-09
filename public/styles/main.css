@@ -10,14 +10,14 @@ h1 {
 
 h2 {
   font-size: 1.5em;
-  transition-duration: .5s;
+  transition-duration: .25s;
 }
 
 #grid-wrapper {
   display: grid;
   margin: 0 auto;
   padding-bottom: 1em;
-  transition-duration: .5s;
+  transition-duration: .25s;
 }
 
 #messages-wrapper, #users-wrapper {
@@ -30,13 +30,22 @@ h2 {
   display: flex;
   flex-direction: column;
   box-shadow: 3px 3px 3px black;
-  transition-duration: .5s;
+}
+
+#messages-flexbox {
+  overflow: auto;
+  display: flex;
+  flex-direction: column-reverse;
+  height: 100%;
 }
 
 #messages-viewer, #users-viewer {
   overflow: auto;
-  height: 100%;
   padding: 0 .5em;
+}
+
+#users-viewer {
+  height: 100%;
 }
 
 #input-bar, #username-bar {
@@ -135,6 +144,7 @@ li {
   #grid-wrapper {
     justify-content: center;
     grid-template-columns: 60% 40%;
+    grid-template-rows: 100%;
     grid-column-gap: 10px;
     width: 90vw;
     height: 70vh;
