@@ -39,7 +39,7 @@ function setUpMsgSending() {
         };
         ws.send(JSON.stringify(outgoingMsgObj));
         messageInput.value = '';
-        
+
         // hide keyboard on mobile after submit
         if (navigator.userAgent.match(/Android/i)
             || navigator.userAgent.match(/webOS/i)
@@ -52,6 +52,22 @@ function setUpMsgSending() {
         }
       }
     }
+  }
+
+  // scroll into view on focus if mobile
+  if (navigator.userAgent.match(/Android/i)
+      || navigator.userAgent.match(/webOS/i)
+      || navigator.userAgent.match(/iPhone/i)
+      || navigator.userAgent.match(/iPad/i)
+      || navigator.userAgend.match(/iPod/i)
+      || navigator.userAgent.match(/BlackBerry/i)
+      || navigator.userAgent.match(/Windows Phone/i)) {
+    messageInput.addEventListener('focus', function() {
+      this.scrollIntoView(false);
+    });
+    usernameInput.addEventListener('focus', function() {
+      this.scrollIntoView(false);
+    });
   }
 }
 
