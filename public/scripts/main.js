@@ -64,12 +64,12 @@ function setUpMsgSending() {
       || navigator.userAgent.match(/Windows Phone/i)) {
     messageInput.addEventListener('focus', function() {
       setTimeout(() => {
-        this.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
+        this.scrollIntoView(false);
       }, 450);
     });
     usernameInput.addEventListener('focus', function() {
       setTimeout(() => {
-        this.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
+        this.scrollIntoView(false);
       }, 450);
     });
   }
