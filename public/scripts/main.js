@@ -65,12 +65,12 @@ function setUpMsgSending() {
     messageInput.addEventListener('focus', function() {
       setTimeout(() => {
         this.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
-      }, 350);
+      }, 450);
     });
     usernameInput.addEventListener('focus', function() {
       setTimeout(() => {
         this.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
-      }, 350);
+      }, 450);
     });
   }
 }
