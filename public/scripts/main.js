@@ -54,25 +54,17 @@ function setUpMsgSending() {
     }
   }
 
-  // scroll into view on focus if mobile
-  // if (navigator.userAgent.match(/Android/i)
-  //     || navigator.userAgent.match(/webOS/i)
-  //     || navigator.userAgent.match(/iPhone/i)
-  //     || navigator.userAgent.match(/iPad/i)
-  //     || navigator.userAgent.match(/iPod/i)
-  //     || navigator.userAgent.match(/BlackBerry/i)
-  //     || navigator.userAgent.match(/Windows Phone/i)) {
-  //   messageInput.addEventListener('focus', function() {
-  //     setTimeout(() => {
-  //       this.scrollIntoView(false);
-  //     }, 450);
-  //   });
-  //   usernameInput.addEventListener('focus', function() {
-  //     setTimeout(() => {
-  //       this.scrollIntoView(false);
-  //     }, 450);
-  //   });
-  // }
+  // scroll into view on focus (so virtual keyboard doesn't get in the way on mobile)
+  messageInput.addEventListener('focus', function() {
+    setTimeout(() => {
+      this.scrollIntoView(false);
+    }, 450);
+  });
+  usernameInput.addEventListener('focus', function() {
+    setTimeout(() => {
+      this.scrollIntoView(false);
+    }, 450);
+  });
 }
 
 function setUpMsgReceiving() {
