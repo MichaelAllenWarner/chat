@@ -156,7 +156,7 @@ li {
   }
 }
 
-@media screen and (max-width: 601px) and (max-height: 600px) {
+@media screen and (max-width: 601px) and (max-height: 551px) {
   #grid-wrapper {
     height: 140vh;
   }
