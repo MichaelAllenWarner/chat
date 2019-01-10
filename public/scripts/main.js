@@ -58,12 +58,12 @@ function setUpMsgSending() {
   messageInput.addEventListener('focus', function() {
     setTimeout(() => {
       this.scrollIntoView(false);
-    }, 450);
+    }, 300);
   });
   usernameInput.addEventListener('focus', function() {
     setTimeout(() => {
       this.scrollIntoView(false);
-    }, 450);
+    }, 300);
   });
 }
 
