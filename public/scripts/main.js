@@ -5,6 +5,14 @@ const ids = {}; // one publicid, one privateid, server will send
 setUpMsgSending();
 setUpMsgReceiving();
 
+if (navigator.userAgent.match(/Android/i)
+    || navigator.userAgent.match(/webOS/i)
+    || navigator.userAgent.match(/iPhone/i)
+    || navigator.userAgent.match(/BlackBerry/i)
+    || navigator.userAgent.match(/Windows Phone/i) {
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
 // scroll chat window down on window resize
 window.addEventListener('resize', () => {
   const viewer = document.querySelector('#messages-viewer');
