@@ -19,14 +19,14 @@ wss.broadcast = data => {
   });
 };
 
-const publicUsersObj = { type: 'users', users: {} };
+const publicUsersObj = { type: 'users', usernames: {} };
 
 wss.on('connection', ws => {
   ws.publicid = uniqid();
   ws.privateid = bcrypt.hashSync(uniqid(), 0);
-  publicUsersObj.users[ws.publicid] = '';
+  publicUsersObj.usernames[ws.publicid] = '';
   ws.send(JSON.stringify({
-    type: 'ownids',
+    type: 'ids',
     yourPublicid: ws.publicid,
     yourPrivateid: ws.privateid
   }));
@@ -58,10 +58,10 @@ wss.on('connection', ws => {
     }
 
     // update username if necessary and tell all clients
-    if (msgObj.username !== publicUsersObj.users[ws.publicid]) {
+    if (msgObj.username !== publicUsersObj.usernames[ws.publicid]) {
       // check if username is already taken
-      const publicidOfTakenUsername = Object.keys(publicUsersObj.users)
-          .find(key => publicUsersObj.users[key] === msgObj.username);
+      const publicidOfTakenUsername = Object.keys(publicUsersObj.usernames)
+          .find(key => publicUsersObj.usernames[key] === msgObj.username);
       // send error message if new username is already taken
       if (msgObj.username && publicidOfTakenUsername) {
         ws.send(JSON.stringify({
@@ -71,7 +71,7 @@ wss.on('connection', ws => {
         }));
         return;
       }
-      publicUsersObj.users[ws.publicid] = msgObj.username;
+      publicUsersObj.usernames[ws.publicid] = msgObj.username;
       wss.broadcast(JSON.stringify(publicUsersObj));
     }
     // strip message of privateid before broadcasting
@@ -81,7 +81,7 @@ wss.on('connection', ws => {
 
   ws.on('close', () => {
     console.log('client disconnected, publicid: ' + ws.publicid);
-    delete publicUsersObj.users[ws.publicid];
+    delete publicUsersObj.usernames[ws.publicid];
     console.log(publicUsersObj);
     wss.broadcast(JSON.stringify(publicUsersObj));
   });

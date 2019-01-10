@@ -2,13 +2,13 @@
 
 const ids = {}; // one publicid, one privateid, server will send
 
+// set up websocket behavior
 setUpMsgSending();
 setUpMsgReceiving();
 
-// scroll chat window down on window resize
+// set chat div to scroll to bottom on window-resize
 window.addEventListener('resize', () => {
   const viewer = document.querySelector('#messages-viewer');
-  // without this delay it doesn't always work in all browsers
   setTimeout(() => {
     viewer.scrollTop = viewer.scrollHeight - viewer.clientHeight;
   }, 500);
@@ -45,7 +45,7 @@ function setUpMsgSending() {
             || navigator.userAgent.match(/webOS/i)
             || navigator.userAgent.match(/iPhone/i)
             || navigator.userAgent.match(/iPad/i)
-            || navigator.userAgend.match(/iPod/i)
+            || navigator.userAgent.match(/iPod/i)
             || navigator.userAgent.match(/BlackBerry/i)
             || navigator.userAgent.match(/Windows Phone/i)) {
           this.blur();
@@ -59,7 +59,7 @@ function setUpMsgSending() {
       || navigator.userAgent.match(/webOS/i)
       || navigator.userAgent.match(/iPhone/i)
       || navigator.userAgent.match(/iPad/i)
-      || navigator.userAgend.match(/iPod/i)
+      || navigator.userAgent.match(/iPod/i)
       || navigator.userAgent.match(/BlackBerry/i)
       || navigator.userAgent.match(/Windows Phone/i)) {
     messageInput.addEventListener('focus', function() {
@@ -81,15 +81,15 @@ function setUpMsgReceiving() {
     const msgData = JSON.parse(incomingMsgObj.data);
 
     switch (msgData.type) {
-      case 'error':
-        communicateError();
-        break;
-      case 'ownids':
+      case 'ids':
         ids.publicid = msgData.yourPublicid;
         ids.privateid = msgData.yourPrivateid;
         break;
+      case 'error':
+        communicateError();
+        break;
       case 'users':
-        updateUsernamesList(msgData.users, ids.publicid);
+        updateUsernamesList(msgData.usernames, ids.publicid);
         break;
       case 'text':
         processNewTextMsg(ids.publicid);
@@ -120,7 +120,7 @@ function setUpMsgReceiving() {
       }
     }
 
-    function updateUsernamesList(usersObj, ownPublicid) {
+    function updateUsernamesList(usernamesObj, ownPublicid) {
       const usernamesList = document.querySelector('#usernames-list');
       while (usernamesList.firstChild) {
         usernamesList.removeChild(usernamesList.firstChild);
@@ -129,7 +129,7 @@ function setUpMsgReceiving() {
       ownUserItem.id = 'own-user';
       ownUserItem.setAttribute('data-publicid', ownPublicid)
       usernamesList.appendChild(ownUserItem);
-      for (const [publicid, username] of Object.entries(usersObj)) {
+      for (const [publicid, username] of Object.entries(usernamesObj)) {
         if (publicid === ownPublicid) {
           ownUserItem.textContent = (username) ? `${username} (You)` : 'An anonymous user (You)';
         } else {
