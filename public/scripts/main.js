@@ -5,9 +5,6 @@ const ids = {}; // one publicid, one privateid, server will send
 setUpMsgSending();
 setUpMsgReceiving();
 
-// scroll all the way down if needed (mobile)
-document.querySelector('#username-input').scrollIntoView(false);
-
 // scroll chat window down on window resize
 window.addEventListener('resize', () => {
   const viewer = document.querySelector('#messages-viewer');
@@ -67,13 +64,13 @@ function setUpMsgSending() {
       || navigator.userAgent.match(/Windows Phone/i)) {
     messageInput.addEventListener('focus', function() {
       setTimeout(() => {
-        this.scrollIntoView(false);
-      }, 500);
+        this.scrollIntoView({behavior: "smooth" block: "end", inline: "nearest"});
+      }, 350);
     });
     usernameInput.addEventListener('focus', function() {
       setTimeout(() => {
-        this.scrollIntoView(false);
-      }, 500);
+        this.scrollIntoView({behavior: "smooth" block: "end", inline: "nearest"});
+      }, 350);
     });
   }
 }
