@@ -8,9 +8,9 @@ setUpMsgReceiving();
 
 // set chat div to scroll to bottom on window-resize
 window.addEventListener('resize', () => {
-  const viewer = document.querySelector('#messages-viewer');
+  const messagesViewer = document.querySelector('#messages-viewer');
   setTimeout(() => {
-    viewer.scrollTop = viewer.scrollHeight - viewer.clientHeight;
+    messagesViewer.scrollTop = messagesViewer.scrollHeight - messagesViewer.clientHeight;
   }, 500);
 });
 
@@ -55,24 +55,24 @@ function setUpMsgSending() {
   }
 
   // scroll into view on focus if mobile
-  if (navigator.userAgent.match(/Android/i)
-      || navigator.userAgent.match(/webOS/i)
-      || navigator.userAgent.match(/iPhone/i)
-      || navigator.userAgent.match(/iPad/i)
-      || navigator.userAgent.match(/iPod/i)
-      || navigator.userAgent.match(/BlackBerry/i)
-      || navigator.userAgent.match(/Windows Phone/i)) {
-    messageInput.addEventListener('focus', function() {
-      setTimeout(() => {
-        this.scrollIntoView(false);
-      }, 450);
-    });
-    usernameInput.addEventListener('focus', function() {
-      setTimeout(() => {
-        this.scrollIntoView(false);
-      }, 450);
-    });
-  }
+  // if (navigator.userAgent.match(/Android/i)
+  //     || navigator.userAgent.match(/webOS/i)
+  //     || navigator.userAgent.match(/iPhone/i)
+  //     || navigator.userAgent.match(/iPad/i)
+  //     || navigator.userAgent.match(/iPod/i)
+  //     || navigator.userAgent.match(/BlackBerry/i)
+  //     || navigator.userAgent.match(/Windows Phone/i)) {
+  //   messageInput.addEventListener('focus', function() {
+  //     setTimeout(() => {
+  //       this.scrollIntoView(false);
+  //     }, 450);
+  //   });
+  //   usernameInput.addEventListener('focus', function() {
+  //     setTimeout(() => {
+  //       this.scrollIntoView(false);
+  //     }, 450);
+  //   });
+  // }
 }
 
 function setUpMsgReceiving() {
@@ -142,36 +142,40 @@ function setUpMsgReceiving() {
     }
 
     function processNewTextMsg(ownPublicid) {
-      const viewer = document.querySelector('#messages-viewer');
-      const wasScrolledDown = (viewer.scrollHeight - viewer.scrollTop <= viewer.clientHeight + 5);
-
-      const publicid = msgData.publicid;
-      const username = (publicid === ownPublicid) ? 'You'
-      : (!msgData.username) ? 'An anonymous user'
-      : msgData.username;
-      const time = new Date(msgData.time);
       const text = msgData.text.trimStart();
-
       if (text) {
+        const publicid = msgData.publicid;
+        const username = (publicid === ownPublicid) ? 'You'
+        : (!msgData.username) ? 'An anonymous user'
+        : msgData.username;
+        const time = new Date(msgData.time);
+
         const newMsg = document.createElement('p');
-        const msgUserClass = (publicid === ownPublicid) ? 'own-message' : 'other-message';
-        newMsg.classList.add(msgUserClass);
+        const msgClass = (publicid === ownPublicid) ? 'own-message' : 'other-message';
+        newMsg.classList.add(msgClass);
         newMsg.setAttribute('data-time', time);
 
-        const usernameSpan = document.createElement('span');
-        usernameSpan.textContent = `${username}: `;
-        usernameSpan.classList.add('username-prefix');
-        newMsg.appendChild(usernameSpan);
+        const usernamePrefix = document.createElement('span');
+        usernamePrefix.textContent = `${username}: `;
+        usernamePrefix.classList.add('username-prefix');
 
         const textNode = document.createTextNode(text);
+
+        newMsg.appendChild(usernamePrefix);
         newMsg.appendChild(textNode);
 
-        viewer.appendChild(newMsg);
-      }
+        const messagesViewer = document.querySelector('#messages-viewer');
+        const scrHgt = messagesViewer.scrollHeight;
+        const scrTop = messagesViewer.scrollTop;
+        const cliHgt = messagesViewer.clientHeight;
+        const messagesViewerWasScrolledDown = (scrHgt - scrTop <= cliHgt + 5);
 
-      // scroll down if already was (nearly) scrolled down
-      if (wasScrolledDown) {
-        viewer.scrollTop = viewer.scrollHeight - viewer.clientHeight; 
+        messagesViewer.appendChild(newMsg);
+
+        // scroll down messages-viewer if already was (nearly) scrolled down
+        if (messagesViewerWasScrolledDown) {
+          messagesViewer.scrollTop = messagesViewer.scrollHeight - messagesViewer.clientHeight; 
+        }
       }
     }
   }

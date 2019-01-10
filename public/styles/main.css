@@ -40,13 +40,13 @@ input {
   display: grid;
   /*margin: 0 auto;*/
   transition-duration: .25s;
-  height: calc(100vh - 4.5em);
+  /*height: calc(100vh - 4.5em);*/
   /* add: */
   height: 100%;
   overflow: auto;
 }
 
-#messages-wrapper, #users-wrapper {
+.inner-wrapper {
   background-color: white;
   /*margin: 0 auto;*/
   /*overflow: auto;*/
@@ -63,7 +63,7 @@ input {
   height: 100%;
 }
 
-#messages-viewer, #users-viewer {
+.viewer {
   overflow: auto;
   padding: 0 .5em;
 }
@@ -72,7 +72,7 @@ input {
   height: 100%;
 }
 
-#input-bar, #username-bar {
+.bottom-bar {
   padding: 1em 1em;
   border-top: 1px solid black;
 }
@@ -83,24 +83,6 @@ input {
 
 #username-input {
   width: 50%;
-}
-
-@keyframes bad-username-animation {
-  from {color: black;}
-  to {color: red;}
-}
-
-.bad-username {
-  animation: .2s 4 alternate bad-username-animation;
-}
-
-@keyframes taken-username-animation {
-  from {color: red;}
-  to {color: black;}
-}
-
-.taken-username {
-  animation: .2s 4 alternate taken-username-animation;
 }
 
 span.username-prefix {
@@ -128,9 +110,24 @@ li {
   color: blue;
 }
 
-#error-message {
-  color: red;
+@keyframes bad-username-animation {
+  from {color: black;}
+  to {color: red;}
 }
+
+.bad-username {
+  animation: .2s 4 alternate bad-username-animation;
+}
+
+@keyframes taken-username-animation {
+  from {color: red;}
+  to {color: black;}
+}
+
+.taken-username {
+  animation: .2s 4 alternate taken-username-animation;
+}
+
 
 
 /*
@@ -159,16 +156,18 @@ li {
 @media screen and (max-width: 600px) {
   #grid-wrapper {
     grid-auto-columns: 100%;
-    grid-template-rows: 60% 40%;
+    grid-template-rows: 55% 45%;
     /*width: 100%;*/
   }
 }
 
-@media screen and (max-width: 601px) and (max-height: 551px) {
-/*  #grid-wrapper {
-    height: 140vh;
-  }*/
+@media screen and (max-width: 600px) and (max-height: 500px) {
+  #grid-wrapper {
+    grid-template-rows: 100% 100%;
+  }
+}
 
+@media screen and (max-width: 600px) and (max-height: 350px) {
   h2 {
     font-size: 1.25em;
     margin-top: .5em;
@@ -189,7 +188,7 @@ li {
   }
 }
 
-@media screen and (min-width: 601px) and (max-height: 450px) {
+@media screen and (min-width: 601px) and (max-height: 350px) {
   h2 {
     font-size: 1.25em;
     margin-top: .5em;
