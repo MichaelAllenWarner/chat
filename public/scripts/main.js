@@ -5,6 +5,9 @@ const ids = {}; // one publicid, one privateid, server will send
 setUpMsgSending();
 setUpMsgReceiving();
 
+// scroll 'past' address bar on mobile
+window.scrollTo(0, 1);
+
 // scroll chat window down on window resize
 window.addEventListener('resize', () => {
   const viewer = document.querySelector('#messages-viewer');

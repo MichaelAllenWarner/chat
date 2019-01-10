@@ -42,10 +42,8 @@ input {
   overflow: auto;
   width: 100%;
   border: 1px solid black;
-  /*border-radius: 15px;*/
   display: flex;
   flex-direction: column;
-  /*box-shadow: 3px 3px 3px black;*/
 }
 
 #messages-flexbox {
