@@ -5,14 +5,6 @@ const ids = {}; // one publicid, one privateid, server will send
 setUpMsgSending();
 setUpMsgReceiving();
 
-if (navigator.userAgent.match(/Android/i)
-    || navigator.userAgent.match(/webOS/i)
-    || navigator.userAgent.match(/iPhone/i)
-    || navigator.userAgent.match(/BlackBerry/i)
-    || navigator.userAgent.match(/Windows Phone/i) {
-  window.scrollTo(0, document.body.scrollHeight);
-}
-
 // scroll chat window down on window resize
 window.addEventListener('resize', () => {
   const viewer = document.querySelector('#messages-viewer');
@@ -32,7 +24,7 @@ function setUpMsgSending() {
   // should we allow line breaks within a message?
 
   function sendMsgCallback() {
-    return event => {
+    return function sendMsgHandler(event) {
       const oldUsernameWithYou = document.querySelector('#own-user').textContent;
       const oldUsername = oldUsernameWithYou.substring(0, oldUsernameWithYou.length - 6);
       if (event.key === 'Enter'
@@ -47,6 +39,17 @@ function setUpMsgSending() {
         };
         ws.send(JSON.stringify(outgoingMsgObj));
         messageInput.value = '';
+        
+        // hide keyboard on mobile after submit
+        if (navigator.userAgent.match(/Android/i)
+            || navigator.userAgent.match(/webOS/i)
+            || navigator.userAgent.match(/iPhone/i)
+            || navigator.userAgent.match(/iPad/i)
+            || navigator.userAgend.match(/iPod/i)
+            || navigator.userAgent.match(/BlackBerry/i)
+            || navigator.userAgent.match(/Windows Phone/i)) {
+          this.blur();
+        }
       }
     }
   }
