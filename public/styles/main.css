@@ -1,10 +1,21 @@
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
 body {
   background-color: lightblue;
   font-size: 16px;
   text-align: center;
+  font-family: serif;
+  margin: 0;
 }
 
 h1 {
+  margin: .5em auto;
   font-size: 2em;
 }
 
@@ -15,13 +26,14 @@ h2 {
 
 input {
   font-size: 16px;
+  font-family: serif;
 }
 
 #grid-wrapper {
   display: grid;
   margin: 0 auto;
-  padding-bottom: 1em;
   transition-duration: .25s;
+  height: calc(100vh - 4.5em);
 }
 
 #messages-wrapper, #users-wrapper {
@@ -30,10 +42,10 @@ input {
   overflow: auto;
   width: 100%;
   border: 1px solid black;
-  border-radius: 15px;
+  /*border-radius: 15px;*/
   display: flex;
   flex-direction: column;
-  box-shadow: 3px 3px 3px black;
+  /*box-shadow: 3px 3px 3px black;*/
 }
 
 #messages-flexbox {
@@ -63,6 +75,24 @@ input {
 
 #username-input {
   width: 50%;
+}
+
+@keyframes bad-username-animation {
+  from {color: black;}
+  to {color: red;}
+}
+
+.bad-username {
+  animation: .2s 4 alternate bad-username-animation;
+}
+
+@keyframes taken-username-animation {
+  from {color: red;}
+  to {color: black;}
+}
+
+.taken-username {
+  animation: .2s 4 alternate taken-username-animation;
 }
 
 span.username-prefix {
@@ -120,17 +150,15 @@ li {
 
 @media screen and (max-width: 600px) {
   #grid-wrapper {
-    grid-template-columns: 100%; /* make it auto-columns? */
+    grid-auto-columns: 100%;
     grid-template-rows: 60% 40%;
-    grid-row-gap: 10px;
-    width: 75vw;
-    height: 75vh;
+    width: 100%;
   }
 }
 
 @media screen and (max-width: 601px) and (max-height: 600px) {
   #grid-wrapper {
-    height: 120vh;
+    height: 140vh;
   }
 
   h2 {
@@ -148,18 +176,12 @@ li {
   #grid-wrapper {
     justify-content: center;
     grid-template-columns: 60% 40%;
-    grid-template-rows: 100%; /* make it auto-rows? */
-    grid-column-gap: 10px;
-    width: 90vw;
-    height: 70vh;
+    grid-auto-rows: 100%;
+    width: 100%;
   }
 }
 
 @media screen and (min-width: 601px) and (max-height: 450px) {
-  #grid-wrapper {
-    height: 55vh;
-  }
-
   h2 {
     font-size: 1.25em;
     margin-top: .5em;

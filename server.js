@@ -52,23 +52,29 @@ wss.on('connection', ws => {
         || typeof msgObj.text !== 'string') {
       ws.send(JSON.stringify({
         type: 'error',
-        error: 'Problem with submitted data. Message delivery failed. You may need to refresh page.'
+        error: 'badObject'
       }));
       return;
     }
+
     // update username if necessary and tell all clients
     if (msgObj.username !== publicUsersObj.users[ws.publicid]) {
+      // check if username is already taken
+      const publicidOfTakenUsername = Object.keys(publicUsersObj.users)
+          .find(key => publicUsersObj.users[key] === msgObj.username);
       // send error message if new username is already taken
-      if (Object.values(publicUsersObj.users).includes(msgObj.username)) {
+      if (msgObj.username && publicidOfTakenUsername) {
         ws.send(JSON.stringify({
           type: 'error',
-          error: 'That username is taken. Try again with a unique handle.'
+          error: 'takenUsername',
+          publicidOfTakenUsername
         }));
         return;
       }
       publicUsersObj.users[ws.publicid] = msgObj.username;
       wss.broadcast(JSON.stringify(publicUsersObj));
     }
+    // strip message of privateid before broadcasting
     delete msgObj.privateid;
     wss.broadcast(JSON.stringify(msgObj));
   });

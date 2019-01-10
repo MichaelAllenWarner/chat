@@ -5,9 +5,10 @@ const ids = {}; // one publicid, one privateid, server will send
 setUpMsgSending();
 setUpMsgReceiving();
 
-// scroll chat window down on window resize (not perfect but good for mobile)
+// scroll chat window down on window resize
 window.addEventListener('resize', () => {
   const viewer = document.querySelector('#messages-viewer');
+  // without this delay it doesn't always work in all browsers
   setTimeout(() => {
     viewer.scrollTop = viewer.scrollHeight - viewer.clientHeight;
   }, 500);
@@ -50,8 +51,7 @@ function setUpMsgReceiving() {
 
     switch (msgData.type) {
       case 'error':
-        const errorMessage = document.querySelector('#error-message');
-        errorMessage.textContent = msgData.error;
+        communicateError();
         break;
       case 'ownids':
         ids.publicid = msgData.yourPublicid;
@@ -61,8 +61,32 @@ function setUpMsgReceiving() {
         updateUsernamesList(msgData.users, ids.publicid);
         break;
       case 'text':
-        processNewTextMsg(msgData, ids.publicid);
+        processNewTextMsg(ids.publicid);
         break;
+    }
+
+    function communicateError() {
+      if (msgData.error = 'takenUsername') {
+        const usernameLabel = document.querySelector('#username-label');
+        usernameLabel.addEventListener('animationend', function() {
+          this.classList.remove('bad-username');
+        });
+
+        let takenUsernameItem;
+        const usernamesArr = document.querySelectorAll('li');
+        for (let username of usernamesArr) {
+          if (username.getAttribute('data-publicid') === msgData.publicidOfTakenUsername) {
+            takenUsernameItem = username;
+            break;
+          }
+        }
+        takenUsernameItem.addEventListener('animationend', function() {
+          this.classList.remove('taken-username');
+        });
+
+        usernameLabel.classList.add('bad-username');
+        takenUsernameItem.classList.add('taken-username');
+      }
     }
 
     function updateUsernamesList(usersObj, ownPublicid) {
@@ -76,7 +100,7 @@ function setUpMsgReceiving() {
       usernamesList.appendChild(ownUserItem);
       for (const [publicid, username] of Object.entries(usersObj)) {
         if (publicid === ownPublicid) {
-          ownUserItem.textContent = (username) ? `${username} (You)` : '(You)';
+          ownUserItem.textContent = (username) ? `${username} (You)` : 'An anonymous user (You)';
         } else {
           const usernameItem = document.createElement('li');
           usernameItem.textContent = username || 'An anonymous user';
@@ -86,7 +110,7 @@ function setUpMsgReceiving() {
       }
     }
 
-    function processNewTextMsg(msgData, ownPublicid) {
+    function processNewTextMsg(ownPublicid) {
       const viewer = document.querySelector('#messages-viewer');
       const wasScrolledDown = (viewer.scrollHeight - viewer.scrollTop <= viewer.clientHeight + 5);
 
@@ -114,16 +138,10 @@ function setUpMsgReceiving() {
         viewer.appendChild(newMsg);
       }
 
-      // scroll down only if already was nearly scrolled down
+      // scroll down if already was (nearly) scrolled down
       if (wasScrolledDown) {
         viewer.scrollTop = viewer.scrollHeight - viewer.clientHeight; 
       }
-
-      if (publicid === ownPublicid) {
-        const errorP = document.querySelector('#error-message');
-        errorP.textContent = '';
-      }
-
     }
   }
 }
