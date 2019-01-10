@@ -5,6 +5,9 @@ const ids = {}; // one publicid, one privateid, server will send
 setUpMsgSending();
 setUpMsgReceiving();
 
+// scroll all the way down if needed (mobile)
+document.querySelector('#username-input').scrollIntoView(false);
+
 // scroll chat window down on window resize
 window.addEventListener('resize', () => {
   const viewer = document.querySelector('#messages-viewer');
