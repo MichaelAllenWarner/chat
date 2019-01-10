@@ -63,10 +63,14 @@ function setUpMsgSending() {
       || navigator.userAgent.match(/BlackBerry/i)
       || navigator.userAgent.match(/Windows Phone/i)) {
     messageInput.addEventListener('focus', function() {
-      this.scrollIntoView(false);
+      setTimeout(() => {
+        this.scrollIntoView(false);
+      }, 500);
     });
     usernameInput.addEventListener('focus', function() {
-      this.scrollIntoView(false);
+      setTimeout(() => {
+        this.scrollIntoView(false);
+      }, 500);
     });
   }
 }
