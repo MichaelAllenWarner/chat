@@ -68,7 +68,11 @@ function setUpMsgSending() {
     function scrollToParentEnd() {
       setTimeout(() => {
         this.parentNode.scrollIntoView(false);
-        document.querySelector('#grid-wrapper').scrollBy(0, 1); // to include border
+        const gridWrapper = document.querySelector('#grid-wrapper');
+        // include border in view
+        if (gridWrapper.scrollHeight > 0) {
+          document.querySelector('#grid-wrapper').scrollBy(0, 1);
+        }
       }, 260);
     }
   }
