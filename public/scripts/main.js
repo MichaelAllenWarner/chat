@@ -183,6 +183,15 @@ function setUpSettingsDropdown() {
   const settingsLogo = document.querySelector('#settings-logo');
   const settings = document.querySelector('#settings');
   settingsLogo.addEventListener('click', () => {
-    settings.classList.toggle('hidden');
+    settings.classList.toggle('settings-in');
+    settings.classList.toggle('settings-out');
+  });
+  document.addEventListener('click', function(event) {
+    if (settings.classList.contains('settings-in')
+        && !settings.contains(event.target)
+        && !settingsLogo.contains(event.target)) {
+      console.log('ding');
+      settingsLogo.click();
+    }
   });
 }

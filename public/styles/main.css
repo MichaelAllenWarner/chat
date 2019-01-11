@@ -22,7 +22,7 @@ body {
 header {
   display: grid;
   grid-auto-rows: 100%;
-  grid-template-columns: 15% 85%;
+  grid-template-columns: 12% 76% 12%;
 }
 
 #settings-outer-wrapper {
@@ -32,14 +32,23 @@ header {
 
 #settings-logo-wrapper {
   text-align: left;
-  margin-left: .4em;
-  height: 100%;
+  margin: auto 0 auto .2em;
+  display: flex;
 }
 
 #settings-logo {
-  text-decoration: none;
-  color: black;
-  font-size: 3em;
+  color: gray;
+  font-size: 2.5em;
+  cursor: pointer;
+  transition: color .2s;
+}
+
+#settings-logo:hover {
+  color: dimgray;
+}
+
+#settings-logo:active {
+  color: white;
 }
 
 #settings-inner-wrapper {
@@ -48,26 +57,38 @@ header {
 
 #settings {
   position: absolute;
+  background-color: lightgray;
   width: 300px;
   opacity: .9;
   text-align: left;
+  transition: left .2s;
 }
 
 .setting-item {
-  font-size: 2em;
+  font-size: 1.5em;
   border-top: 1px solid black;
   border-left: 1px solid black;
   box-shadow: 1px 1px 1px black;
-  background-color: lightgray;
 }
 
-.hidden {
-  display: none;
+.settings-out {
+  left: -301px; /* must equal #settings width + .setting-item border*/
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+.settings-in {
+  left: 0;
+  user-select: auto;
+  -moz-user-select: auto;
+  -webkit-user-select: auto;
+  -ms-user-select: auto;
 }
 
 h1 {
   margin: .5em auto;
-  padding-right: 1em;
   font-size: 2em;
 }
 
