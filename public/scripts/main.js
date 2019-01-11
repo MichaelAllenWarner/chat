@@ -66,14 +66,12 @@ function setUpMsgSending() {
     usernameInput.addEventListener('focus', scrollToParentEnd);
 
     function scrollToParentEnd() {
-      setTimeout(() => {
-        this.parentNode.scrollIntoView(false);
-      }, 260);
-
-      // adjust by 1 px to include border in view (if needed!)
       const gridWrapper = document.querySelector('#grid-wrapper');
-      if (gridWrapper.scrollHeight > 0) {
-        document.querySelector('#grid-wrapper').scrollBy(0, 1);
+        if (gridWrapper.scrollTop > 0) {
+        setTimeout(() => {
+          this.parentNode.scrollIntoView(false);
+          document.querySelector('#grid-wrapper').scrollBy(0, 1);
+        }, 260);
       }
     }
   }
