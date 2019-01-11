@@ -54,30 +54,19 @@ function setUpMsgSending() {
     }
   }
 
-  // on mobile, scroll into view on focus (so virtual keyboard isn't in the way)
-  if (navigator.userAgent.match(/Android/i)
-      || navigator.userAgent.match(/webOS/i)
-      || navigator.userAgent.match(/iPhone/i)
-      || navigator.userAgent.match(/iPad/i)
-      || navigator.userAgent.match(/iPod/i)
-      || navigator.userAgent.match(/BlackBerry/i)
-      || navigator.userAgent.match(/Windows Phone/i)) {
-    messageInput.addEventListener('focus', scrollToParentEnd);
-    usernameInput.addEventListener('focus', scrollToParentEnd);
+  // scroll into view on focus (so virtual keyboard isn't in the way on mobile)
+  messageInput.addEventListener('focus', scrollToParentEnd);
+  usernameInput.addEventListener('focus', scrollToParentEnd);
 
-    function scrollToParentEnd() {
-      const gridWrapper = document.querySelector('#grid-wrapper');
-      let needToScrollOnePxForBorder;
+  function scrollToParentEnd() {
+    const gridWrapper = document.querySelector('#grid-wrapper');
 
-      setTimeout(() => {
-        this.parentNode.scrollIntoView(false);
-        needToScrollOnePxForBorder = (gridWrapper.scrollTop > 0);
-      }, 260);
-
-      if (needToScrollOnePxForBorder) {
+    setTimeout(() => {
+      this.parentNode.scrollIntoView(false);
+      if (gridWrapper.scrollTop > 0) {
         gridWrapper.scrollBy(0, 1);
       }
-    }
+    }, 260);
   }
 }
 
