@@ -90,6 +90,7 @@ header {
 h1 {
   margin: .5em auto;
   font-size: 2em;
+  transition-duration: .15s;
 }
 
 h2 {
@@ -224,6 +225,11 @@ li {
 }
 
 @media screen and (max-height: 350px) {
+
+  h1 {
+    font-size: 1.6em;
+  }
+
   h2 {
     font-size: 1.25em;
     margin-top: .4em;
