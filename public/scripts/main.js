@@ -66,13 +66,13 @@ function setUpMsgSending() {
     usernameInput.addEventListener('focus', scrollToParentEnd);
 
     function scrollToParentEnd() {
-      const gridWrapper = document.querySelector('#grid-wrapper');
-        if (gridWrapper.scrollTop > 0) {
-        setTimeout(() => {
-          this.parentNode.scrollIntoView(false);
+      const gridWrapperInitScrTop = document.querySelector('#grid-wrapper').scrollTop;
+      setTimeout(() => {
+        this.parentNode.scrollIntoView(false);
+        if (gridWrapperInitScrTop > 0) {
           document.querySelector('#grid-wrapper').scrollBy(0, 1);
-        }, 260);
-      }
+        }
+      }, 260);
     }
   }
 }
