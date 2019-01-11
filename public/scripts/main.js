@@ -62,20 +62,15 @@ function setUpMsgSending() {
       || navigator.userAgent.match(/iPod/i)
       || navigator.userAgent.match(/BlackBerry/i)
       || navigator.userAgent.match(/Windows Phone/i)) {
-    messageInput.addEventListener('focus', function() {
-      for (let i = 0; i < 2; i++) {
-        setTimeout(() => {
-          this.parentNode.scrollIntoView(false);
-        }, 260);
-      }
-    });
-    usernameInput.addEventListener('focus', function() {
-      for (let i = 0; i < 2; i++) {
-        setTimeout(() => {
-          this.parentNode.scrollIntoView(false);
-        }, 260);
-      }
-    });
+    messageInput.addEventListener('focus', scrollToParentEnd);
+    usernameInput.addEventListener('focus', scrollToParentEnd);
+
+    function scrollToParentEnd() {
+      setTimeout(() => {
+        this.parentNode.scrollIntoView(false);
+        window.scrollBy(0, 1); // to include border
+      }, 260);
+    }
   }
 }
 
