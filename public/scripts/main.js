@@ -143,9 +143,7 @@ function setUpMsgReceiving() {
       const text = msgData.text.trimStart();
       if (text) {
         const publicid = msgData.publicid;
-        const username = (publicid === ownPublicid) ? 'You'
-        : (!msgData.username) ? 'An anonymous user'
-        : msgData.username;
+        const username = (!msgData.username) ? 'An anonymous user' : msgData.username;
         const time = new Date(msgData.time);
 
         const newMsg = document.createElement('p');
