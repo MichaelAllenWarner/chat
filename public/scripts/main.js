@@ -6,7 +6,10 @@ const ids = {}; // one publicid, one privateid, server will send
 setUpMsgSending();
 setUpMsgReceiving();
 
+setUpSettingsDropdown();
+
 // set chat div to scroll to bottom on window-resize
+// TODO: THROTTLE or DEBOUNCE this!
 window.addEventListener('resize', () => {
   const messagesViewer = document.querySelector('#messages-viewer');
   setTimeout(() => {
@@ -174,4 +177,12 @@ function setUpMsgReceiving() {
       }
     }
   }
+}
+
+function setUpSettingsDropdown() {
+  const settingsLogo = document.querySelector('#settings-logo');
+  const settings = document.querySelector('#settings');
+  settingsLogo.addEventListener('click', () => {
+    settings.classList.toggle('hidden');
+  });
 }
