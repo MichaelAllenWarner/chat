@@ -201,7 +201,7 @@ function debouncedResizeCallback(setRealViewportHeightVar, scrollDownMessages) {
           gridWrapper.scrollBy(0, 1);
         }
       }
-    }, 150);
+    }, 5);
   }
 }
 
