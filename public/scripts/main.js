@@ -1,7 +1,17 @@
 const HOST = location.origin.replace(/^http/, 'ws');
 const ws = new WebSocket(HOST);
 
+const isMobile =
+  (navigator.userAgent.match(/Android/i)
+    || navigator.userAgent.match(/webOS/i)
+    || navigator.userAgent.match(/iPhone/i)
+    || navigator.userAgent.match(/iPad/i)
+    || navigator.userAgent.match(/iPod/i)
+    || navigator.userAgent.match(/BlackBerry/i)
+    || navigator.userAgent.match(/Windows Phone/i));
+
 const ids = {}; // one publicid, one privateid, server will send
+
 
 // set up websocket behavior
 setUpMsgSending();
@@ -9,33 +19,9 @@ setUpMsgReceiving();
 
 setUpMenuDropdown();
 
-window.addEventListener('resize', resizeCallback(setRealViewportHeightVar, scrollDownMessages));
+window.addEventListener('resize', debouncedResizeCallback(setRealViewportHeightVar, scrollDownMessages));
 setRealViewportHeightVar();
 
-// on mobile, scroll to relevant div on input-box focus
-// (switching grid-template-rows makes it scroll to top)
-// timer is to give screen time to resize
-
-if (navigator.userAgent.match(/Android/i)
-    || navigator.userAgent.match(/webOS/i)
-    || navigator.userAgent.match(/iPhone/i)
-    || navigator.userAgent.match(/iPad/i)
-    || navigator.userAgent.match(/iPod/i)
-    || navigator.userAgent.match(/BlackBerry/i)
-    || navigator.userAgent.match(/Windows Phone/i)) {
-  const messageInput = document.querySelector('#message-input');
-  const usernameInput = document.querySelector('#username-input');
-  messageInput.addEventListener('focus', inputFocusHandler);
-  usernameInput.addEventListener('focus', inputFocusHandler);
-
-  function inputFocusHandler() {
-    const gridWrapper = document.querySelector('#grid-wrapper');
-    this.parentNode.scrollIntoView(false);
-    if (gridWrapper.scrollTop > 0) {
-      gridWrapper.scrollBy(0, 1);
-    }
-  }
-}
 
 function setUpMsgSending() {
   const messageInput = document.querySelector('#message-input');
@@ -64,35 +50,11 @@ function setUpMsgSending() {
         messageInput.value = '';
 
         // hide keyboard on mobile after submit
-        if (navigator.userAgent.match(/Android/i)
-            || navigator.userAgent.match(/webOS/i)
-            || navigator.userAgent.match(/iPhone/i)
-            || navigator.userAgent.match(/iPad/i)
-            || navigator.userAgent.match(/iPod/i)
-            || navigator.userAgent.match(/BlackBerry/i)
-            || navigator.userAgent.match(/Windows Phone/i)) {
+        if (isMobile) {
           this.blur();
         }
       }
     };
-  }
-
-  // scroll into view on focus (so virtual keyboard isn't in the way on mobile)
-  // messageInput.addEventListener('focus', scrollToParentEnd);
-  // usernameInput.addEventListener('focus', scrollToParentEnd);
-
-  function scrollToParentEnd() {
-    const gridWrapper = document.querySelector('#grid-wrapper');
-
-    // not working totally reliably
-    // possible culprits: windows-resize events, css transitions?
-    // possible solutions: throttle/debounce resize events, use animationend event listener here?
-    setTimeout(() => {
-      this.parentNode.scrollIntoView(false);
-      if (gridWrapper.scrollTop > 0) {
-        gridWrapper.scrollBy(0, 1);
-      }
-    }, 260);
   }
 }
 
@@ -216,14 +178,30 @@ function setUpMenuDropdown() {
   });
 }
 
-function resizeCallback(setRealViewportHeightVar, scrollDownMessages) {
+function debouncedResizeCallback(setRealViewportHeightVar, scrollDownMessages) {
+  const gridWrapper = document.querySelector('#grid-wrapper');
+  const activeEl = document.activeElement;
+  const messageInput = document.querySelector('#message-input');
+  const usernameInput = document.querySelector('#username-input');
+  const activeElIsAnInput = (activeEl === messageInput || activeEl === usernameInput);
+
   let resizeTimer;
   return () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-      // setRealViewportHeightVar();
+      setRealViewportHeightVar();
       scrollDownMessages();
-    }, 5);
+
+      // on mobile, opening keyboard causes resize that
+      // forces an upward scroll. So if necessary,
+      // scroll 'back' to relevant div.
+      if (activeElIsAnInput && isMobile) {
+        activeEl.parentNode.scrollIntoView(false);
+        if (gridWrapper.scrollTop > 0) {
+          gridWrapper.scrollBy(0, 1);
+        }
+      }
+    }, 150);
   }
 }
 
