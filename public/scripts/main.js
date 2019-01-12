@@ -28,7 +28,10 @@ function setUpMsgSending() {
       const grandparent = parent.parentNode;
       const grandparentClone = grandparent.cloneNode(true);
       gridWrapper.replaceChild(grandparentClone, grandparent);
+
       const newInput = document.querySelector(id);
+      newInput.focus();
+      newInput.blur();
       newInput.focus();
       const messageInput = document.querySelector('#message-input');
       const usernameInput = document.querySelector('#username-input');
