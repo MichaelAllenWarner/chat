@@ -199,7 +199,7 @@ function resizeCallback(setRealViewportHeightVar, scrollDownMessages) {
     resizeTimer = setTimeout(() => {
       setRealViewportHeightVar();
       scrollDownMessages();
-    }, 250);
+    }, 5);
   }
 }
 
