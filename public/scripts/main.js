@@ -29,13 +29,11 @@ if (navigator.userAgent.match(/Android/i)
   usernameInput.addEventListener('focus', inputFocusHandler);
 
   function inputFocusHandler() {
-    setTimeout(() => {
-      const gridWrapper = document.querySelector('#grid-wrapper');
-      if (gridWrapper.scrollTop > 0) {
-        this.parentNode.scrollIntoView(false);
-        gridWrapper.scrollBy(0, 1);
-      }
-    }, 25);
+    const gridWrapper = document.querySelector('#grid-wrapper');
+    this.parentNode.scrollIntoView(false);
+    if (gridWrapper.scrollTop > 0) {
+      gridWrapper.scrollBy(0, 1);
+    }
   }
 }
 
@@ -223,7 +221,7 @@ function resizeCallback(setRealViewportHeightVar, scrollDownMessages) {
   return () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-      setRealViewportHeightVar();
+      // setRealViewportHeightVar();
       scrollDownMessages();
     }, 5);
   }
