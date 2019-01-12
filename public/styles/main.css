@@ -31,20 +31,18 @@ header {
 }
 
 #settings-logo {
-  border: 1px solid gray;
-  border-radius: 3px;
   padding-left: 2px;
   padding-right: 2px;
   margin: auto 0 auto .4em;
-  color: gray;
-  font-size: 1.2em;
+  color: black;
+  font-size: 2.5em;
+  font-weight: bold;
   cursor: pointer;
   transition: color .2s;
 }
 
 #settings-logo:hover {
-  color: dimgray;
-  border-color: dimgray;
+  color: gray;
 }
 
 #settings-logo:active {
@@ -219,12 +217,6 @@ li {
   h2 {
     font-size: 1.4em;
   }
-
-  #settings-logo {
-    font-size: 1.2em;
-    margin-left: .2em;
-  }
-
 }
 
 @media screen and (max-height: 350px) {
