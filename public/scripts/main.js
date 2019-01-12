@@ -205,12 +205,10 @@ function resizeCallback(setRealViewportHeightVar, scrollDownMessages) {
       setRealViewportHeightVar();
       scrollDownMessages();
       if (activeEl === messageInput || activeEl === usernameInput) {
-        setTimeout(() => {
-          activeEl.parentNode.scrollIntoView(false);
-          if (gridWrapper.scrollTop > 0) {
-            gridWrapper.scrollBy(0, 1);
-          }
-        }, 200);
+        activeEl.parentNode.scrollIntoView(false);
+        if (gridWrapper.scrollTop > 0) {
+          gridWrapper.scrollBy(0, 1);
+        }
       }
     }, 150);
   }
