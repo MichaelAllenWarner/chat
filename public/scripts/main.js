@@ -193,24 +193,26 @@ function setUpMenuDropdown() {
 }
 
 function resizeCallback(setRealViewportHeightVar, scrollDownMessages) {
+  let resizeTimer;
+  const messageInput = document.querySelector('#message-input');
+  const usernameInput = document.querySelector('#username-input');
+  const gridWrapper = document.querySelector('#grid-wrapper');
+
   return () => {
     const activeEl = document.activeElement;
-    const messageInput = document.querySelector('#message-input');
-    const usernameInput = document.querySelector('#username-input');
-    const gridWrapper = document.querySelector('#grid-wrapper');
-
-    let resizeTimer;
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
       setRealViewportHeightVar();
       scrollDownMessages();
       if (activeEl === messageInput || activeEl === usernameInput) {
-        activeEl.parentNode.scrollIntoView(false);
-        if (gridWrapper.scrollTop > 0) {
-          gridWrapper.scrollBy(0, 1);
-        }
+        setTimeout(() => {
+          activeEl.parentNode.scrollIntoView(false);
+          if (gridWrapper.scrollTop > 0) {
+            gridWrapper.scrollBy(0, 1);
+          }
+        }, 10);
       }
-    }, 25);
+    }, 50);
   }
 }
 
