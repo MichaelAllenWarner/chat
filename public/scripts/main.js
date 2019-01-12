@@ -17,77 +17,59 @@ function setUpMsgSending() {
   const messageInput = document.querySelector('#message-input');
   const usernameInput = document.querySelector('#username-input');
 
-  // scroll into view on focus (so virtual keyboard isn't in the way on mobile)
-  messageInput.addEventListener('focus', inputFocusCallback('#message-input'));
-  usernameInput.addEventListener('focus', inputFocusCallback('#username-input'));
-
-  function inputFocusCallback(id) {
-    return function() {
-      const gridWrapper = document.querySelector('#grid-wrapper');
-      const parent = this.parentNode;
-      const grandparent = parent.parentNode;
-      const grandparentClone = grandparent.cloneNode(true);
-      gridWrapper.replaceChild(grandparentClone, grandparent);
-
-      const newInput = document.querySelector(id);
-      newInput.focus();
-      newInput.blur();
-      newInput.focus();
-      const messageInput = document.querySelector('#message-input');
-      const usernameInput = document.querySelector('#username-input');
-      newInput.addEventListener('keydown', sendMsgCallback());
-      newInput.addEventListener('focus', inputFocusCallback(id));
-
-      function sendMsgCallback() {
-        return function sendMsgHandler(event) {
-          const oldUsernameWithYou = document.querySelector('#own-user').textContent;
-          const oldUsername = oldUsernameWithYou.substring(0, oldUsernameWithYou.length - 6);
-          if (event.key === 'Enter'
-              && (messageInput.value || usernameInput.value !== oldUsername)) {
-            const outgoingMsgObj = {
-              type: 'text',
-              privateid: ids.privateid,
-              publicid: ids.publicid,
-              username: usernameInput.value,
-              time: Date.now(),
-              text: messageInput.value.trimStart()
-            };
-            ws.send(JSON.stringify(outgoingMsgObj));
-            messageInput.value = '';
-
-            // hide keyboard on mobile after submit
-            if (navigator.userAgent.match(/Android/i)
-                || navigator.userAgent.match(/webOS/i)
-                || navigator.userAgent.match(/iPhone/i)
-                || navigator.userAgent.match(/iPad/i)
-                || navigator.userAgent.match(/iPod/i)
-                || navigator.userAgent.match(/BlackBerry/i)
-                || navigator.userAgent.match(/Windows Phone/i)) {
-              this.blur();
-            }
-          }
-        };
-      }
-    };
-    // not working totally reliably
-    // possible culprits: windows-resize events, css transitions?
-    // possible solutions: throttle/debounce resize events, use animationend event listener here?
-    // setTimeout(() => {
-      // this.parentNode.scrollIntoView(false);
-      // if (gridWrapper.scrollTop > 0) {
-      //   gridWrapper.scrollBy(0, 1);
-      // }
-    // }, 260);
-  }
-
-  // messageInput.addEventListener('keydown', sendMsgCallback());
-  // usernameInput.addEventListener('keydown', sendMsgCallback());
+  messageInput.addEventListener('keydown', sendMsgCallback());
+  usernameInput.addEventListener('keydown', sendMsgCallback());
 
   // should we allow line breaks within a message?
 
+  function sendMsgCallback() {
+    return function sendMsgHandler(event) {
+      const oldUsernameWithYou = document.querySelector('#own-user').textContent;
+      const oldUsername = oldUsernameWithYou.substring(0, oldUsernameWithYou.length - 6);
+      if (event.key === 'Enter'
+          && (messageInput.value || usernameInput.value !== oldUsername)) {
+        const outgoingMsgObj = {
+          type: 'text',
+          privateid: ids.privateid,
+          publicid: ids.publicid,
+          username: usernameInput.value,
+          time: Date.now(),
+          text: messageInput.value.trimStart()
+        };
+        ws.send(JSON.stringify(outgoingMsgObj));
+        messageInput.value = '';
 
+        // hide keyboard on mobile after submit
+        if (navigator.userAgent.match(/Android/i)
+            || navigator.userAgent.match(/webOS/i)
+            || navigator.userAgent.match(/iPhone/i)
+            || navigator.userAgent.match(/iPad/i)
+            || navigator.userAgent.match(/iPod/i)
+            || navigator.userAgent.match(/BlackBerry/i)
+            || navigator.userAgent.match(/Windows Phone/i)) {
+          this.blur();
+        }
+      }
+    };
+  }
 
+  // scroll into view on focus (so virtual keyboard isn't in the way on mobile)
+  // messageInput.addEventListener('focus', scrollToParentEnd);
+  // usernameInput.addEventListener('focus', scrollToParentEnd);
 
+  function scrollToParentEnd() {
+    const gridWrapper = document.querySelector('#grid-wrapper');
+
+    // not working totally reliably
+    // possible culprits: windows-resize events, css transitions?
+    // possible solutions: throttle/debounce resize events, use animationend event listener here?
+    setTimeout(() => {
+      this.parentNode.scrollIntoView(false);
+      if (gridWrapper.scrollTop > 0) {
+        gridWrapper.scrollBy(0, 1);
+      }
+    }, 260);
+  }
 }
 
 function setUpMsgReceiving() {
@@ -212,12 +194,23 @@ function setUpMenuDropdown() {
 
 function resizeCallback(setRealViewportHeightVar, scrollDownMessages) {
   return () => {
+    const activeEl = document.activeElement;
+    const messageInput = document.querySelector('#message-input');
+    const usernameInput = document.querySelector('#username-input');
+    const gridWrapper = document.querySelector('#grid-wrapper');
+
     let resizeTimer;
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
       setRealViewportHeightVar();
       scrollDownMessages();
-    }, 15);
+      if (activeEl === messageInput || activeEl === usernameInput) {
+        activeEl.parentNode.scrollIntoView(false);
+        if (gridWrapper.scrollTop > 0) {
+          gridWrapper.scrollBy(0, 1);
+        }
+      }
+    }, 250);
   }
 }
 

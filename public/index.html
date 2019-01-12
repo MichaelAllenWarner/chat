@@ -22,26 +22,28 @@
   <h1>Mike's Chat App</h1>
 </header>
 
-<div id="grid-wrapper"><div id="messages-wrapper" class="inner-wrapper">
-  <h2>Chat</h2>
-  <div id="messages-viewer" class="viewer">
-    <div id="messages">
+<div id="grid-wrapper">
+  <div id="messages-wrapper" class="inner-wrapper">
+    <h2>Chat</h2>
+    <div id="messages-viewer" class="viewer">
+      <div id="messages">
+      </div>
+    </div>
+    <div id="input-bar" class="bottom-bar">
+      <label for="message-input">Message: </label><input id="message-input" type="text">
     </div>
   </div>
-  <div id="input-bar" class="bottom-bar">
-    <label for="message-input">Message: </label><input id="message-input" type="text">
+  <div id="users-wrapper" class="inner-wrapper">
+    <h2>Current Users</h2>
+    <div id="users-viewer" class="viewer">
+      <ul id="usernames-list">
+        <li id="own-user">An anonymous user (You)</li>
+      </ul>
+    </div>
+    <div id="username-bar" class="bottom-bar">
+      <label for="username-input" id="username-label">Username: </label><input id="username-input" type="text">
+    </div>
   </div>
-</div><div id="users-wrapper" class="inner-wrapper">
-  <h2>Current Users</h2>
-  <div id="users-viewer" class="viewer">
-    <ul id="usernames-list">
-      <li id="own-user">An anonymous user (You)</li>
-    </ul>
-  </div>
-  <div id="username-bar" class="bottom-bar">
-    <label for="username-input" id="username-label">Username: </label><input id="username-input" type="text">
-  </div>
-</div>
 </div>
 
 <script src="scripts/main.js"></script>
