@@ -1,4 +1,5 @@
-// "ws" is our global websocket object from setup-websockets.js
+const HOST = location.origin.replace(/^http/, 'ws');
+const ws = new WebSocket(HOST);
 
 const ids = {}; // one publicid, one privateid, server will send
 
@@ -8,14 +9,9 @@ setUpMsgReceiving();
 
 setUpMenuDropdown();
 
-// set chat div to scroll to bottom on window-resize
-// TODO: THROTTLE or DEBOUNCE this!
-window.addEventListener('resize', () => {
-  const messages = document.querySelector('#messages');
-  setTimeout(() => {
-    messages.scrollTop = messages.scrollHeight - messages.clientHeight;
-  }, 500);
-});
+window.addEventListener('resize', resizeCallback(setRealViewportHeightVar, scrollDownMessages));
+setRealViewportHeightVar();
+
 
 function setUpMsgSending() {
   const messageInput = document.querySelector('#message-input');
@@ -54,7 +50,7 @@ function setUpMsgSending() {
           this.blur();
         }
       }
-    }
+    };
   }
 
   // scroll into view on focus (so virtual keyboard isn't in the way on mobile)
@@ -67,12 +63,12 @@ function setUpMsgSending() {
     // not working totally reliably
     // possible culprits: windows-resize events, css transitions?
     // possible solutions: throttle/debounce resize events, use animationend event listener here?
-    setTimeout(() => {
+    // setTimeout(() => {
       this.parentNode.scrollIntoView(false);
       if (gridWrapper.scrollTop > 0) {
         gridWrapper.scrollBy(0, 1);
       }
-    }, 260);
+    // }, 260);
   }
 }
 
@@ -100,24 +96,22 @@ function setUpMsgReceiving() {
     function communicateError() {
       if (msgData.error = 'takenUsername') {
         const usernameLabel = document.querySelector('#username-label');
-        usernameLabel.addEventListener('animationend', function() {
-          this.classList.remove('bad-username');
-        });
 
-        let takenUsernameItem;
-        const usernamesArr = document.querySelectorAll('li');
-        for (let username of usernamesArr) {
-          if (username.getAttribute('data-publicid') === msgData.publicidOfTakenUsername) {
-            takenUsernameItem = username;
-            break;
-          }
-        }
-        takenUsernameItem.addEventListener('animationend', function() {
-          this.classList.remove('taken-username');
-        });
+        const usernameItemsArr = Array.from(document.querySelectorAll('li'));
+        const takenUsernameItem = usernameItemsArr.find(usernameItem =>
+          usernameItem.getAttribute('data-publicid') === msgData.publicidOfTakenUsername);
+
+        usernameLabel.addEventListener('animationend', removeClass('bad-username'), { once: true });
+        takenUsernameItem.addEventListener('animationend', removeClass('taken-username'), { once: true });
 
         usernameLabel.classList.add('bad-username');
         takenUsernameItem.classList.add('taken-username');
+
+        function removeClass(classToRemove) {
+          return function() {
+            this.classList.remove(classToRemove);
+          };
+        }
       }
     }
 
@@ -126,10 +120,12 @@ function setUpMsgReceiving() {
       while (usernamesList.firstChild) {
         usernamesList.removeChild(usernamesList.firstChild);
       }
+
       const ownUserItem = document.createElement('li');
       ownUserItem.id = 'own-user';
-      ownUserItem.setAttribute('data-publicid', ownPublicid)
+      ownUserItem.setAttribute('data-publicid', ownPublicid);
       usernamesList.appendChild(ownUserItem);
+
       for (const [publicid, username] of Object.entries(usernamesObj)) {
         if (publicid === ownPublicid) {
           ownUserItem.textContent = (username) ? `${username} (You)` : 'An anonymous user (You)';
@@ -191,8 +187,28 @@ function setUpMenuDropdown() {
     if (menu.classList.contains('menu-in')
         && !menu.contains(event.target)
         && !menuLogo.contains(event.target)) {
-      console.log('ding');
       menuLogo.click();
     }
   });
+}
+
+function resizeCallback(setRealViewportHeightVar, scrollDownMessages) {
+  return () => {
+    let resizeTimer;
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      setRealViewportHeightVar();
+      scrollDownMessages();
+    }, 250);
+  }
+}
+
+function setRealViewportHeightVar() {
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
+function scrollDownMessages() {
+  const messages = document.querySelector('#messages');
+  messages.scrollTop = messages.scrollHeight - messages.clientHeight;
 }
