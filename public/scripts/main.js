@@ -6,14 +6,14 @@ const ids = {}; // one publicid, one privateid, server will send
 setUpMsgSending();
 setUpMsgReceiving();
 
-setUpSettingsDropdown();
+setUpMenuDropdown();
 
 // set chat div to scroll to bottom on window-resize
 // TODO: THROTTLE or DEBOUNCE this!
 window.addEventListener('resize', () => {
-  const messagesViewer = document.querySelector('#messages-viewer');
+  const messages = document.querySelector('#messages');
   setTimeout(() => {
-    messagesViewer.scrollTop = messagesViewer.scrollHeight - messagesViewer.clientHeight;
+    messages.scrollTop = messages.scrollHeight - messages.clientHeight;
   }, 500);
 });
 
@@ -64,6 +64,9 @@ function setUpMsgSending() {
   function scrollToParentEnd() {
     const gridWrapper = document.querySelector('#grid-wrapper');
 
+    // not working totally reliably
+    // possible culprits: windows-resize events, css transitions?
+    // possible solutions: throttle/debounce resize events, use animationend event listener here?
     setTimeout(() => {
       this.parentNode.scrollIntoView(false);
       if (gridWrapper.scrollTop > 0) {
@@ -160,36 +163,36 @@ function setUpMsgReceiving() {
         newMsg.appendChild(usernamePrefix);
         newMsg.appendChild(textNode);
 
-        const messagesViewer = document.querySelector('#messages-viewer');
-        const scrHgt = messagesViewer.scrollHeight;
-        const scrTop = messagesViewer.scrollTop;
-        const cliHgt = messagesViewer.clientHeight;
-        const messagesViewerWasScrolledDown = (scrHgt - scrTop <= cliHgt + 5);
+        const messages = document.querySelector('#messages');
+        const scrHgt = messages.scrollHeight;
+        const scrTop = messages.scrollTop;
+        const cliHgt = messages.clientHeight;
+        const messagesWasScrolledDown = (scrHgt - scrTop <= cliHgt + 5);
 
-        messagesViewer.appendChild(newMsg);
+        messages.appendChild(newMsg);
 
-        // scroll down messages-viewer if already was (nearly) scrolled down
-        if (messagesViewerWasScrolledDown) {
-          messagesViewer.scrollTop = messagesViewer.scrollHeight - messagesViewer.clientHeight; 
+        // scroll down messages if already was (nearly) scrolled down
+        if (messagesWasScrolledDown) {
+          messages.scrollTop = messages.scrollHeight - messages.clientHeight; 
         }
       }
     }
   }
 }
 
-function setUpSettingsDropdown() {
-  const settingsLogo = document.querySelector('#settings-logo');
-  const settings = document.querySelector('#settings');
-  settingsLogo.addEventListener('click', () => {
-    settings.classList.toggle('settings-in');
-    settings.classList.toggle('settings-out');
+function setUpMenuDropdown() {
+  const menuLogo = document.querySelector('#menu-logo');
+  const menu = document.querySelector('#menu');
+  menuLogo.addEventListener('click', () => {
+    menu.classList.toggle('menu-in');
+    menu.classList.toggle('menu-out');
   });
   document.addEventListener('click', function(event) {
-    if (settings.classList.contains('settings-in')
-        && !settings.contains(event.target)
-        && !settingsLogo.contains(event.target)) {
+    if (menu.classList.contains('menu-in')
+        && !menu.contains(event.target)
+        && !menuLogo.contains(event.target)) {
       console.log('ding');
-      settingsLogo.click();
+      menuLogo.click();
     }
   });
 }
