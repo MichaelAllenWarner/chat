@@ -210,7 +210,7 @@ function resizeCallback(setRealViewportHeightVar, scrollDownMessages) {
           if (gridWrapper.scrollTop > 0) {
             gridWrapper.scrollBy(0, 1);
           }
-        }, 250);
+        }, 200);
       }
     }, 150);
   }
