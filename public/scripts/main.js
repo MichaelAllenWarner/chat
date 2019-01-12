@@ -198,8 +198,8 @@ function resizeCallback(setRealViewportHeightVar, scrollDownMessages) {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
       setRealViewportHeightVar();
-      scrollDownMessages();
-    }, 5);
+      // scrollDownMessages();
+    }, 50);
   }
 }
 
