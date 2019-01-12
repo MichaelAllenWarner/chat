@@ -12,6 +12,32 @@ setUpMenuDropdown();
 window.addEventListener('resize', resizeCallback(setRealViewportHeightVar, scrollDownMessages));
 setRealViewportHeightVar();
 
+// on mobile, scroll to relevant div on input-box focus
+// (switching grid-template-rows makes it scroll to top)
+// timer is to give screen time to resize
+
+if (navigator.userAgent.match(/Android/i)
+    || navigator.userAgent.match(/webOS/i)
+    || navigator.userAgent.match(/iPhone/i)
+    || navigator.userAgent.match(/iPad/i)
+    || navigator.userAgent.match(/iPod/i)
+    || navigator.userAgent.match(/BlackBerry/i)
+    || navigator.userAgent.match(/Windows Phone/i)) {
+  const messageInput = document.querySelector('#message-input');
+  const usernameInput = document.querySelector('#username-input');
+  messageInput.addEventListener('focus', inputFocusHandler);
+  usernameInput.addEventListener('focus', inputFocusHandler);
+
+  function inputFocusHandler() {
+    setTimeout(() => {
+      const gridWrapper = document.querySelector('#grid-wrapper');
+      if (gridWrapper.scrollTop > 0) {
+        this.parentNode.scrollIntoView(false);
+        gridWrapper.scrollBy(0, 1);
+      }
+    }, 25);
+  }
+}
 
 function setUpMsgSending() {
   const messageInput = document.querySelector('#message-input');
@@ -194,22 +220,11 @@ function setUpMenuDropdown() {
 
 function resizeCallback(setRealViewportHeightVar, scrollDownMessages) {
   let resizeTimer;
-  const messageInput = document.querySelector('#message-input');
-  const usernameInput = document.querySelector('#username-input');
-  const gridWrapper = document.querySelector('#grid-wrapper');
-
   return () => {
-    const activeEl = document.activeElement;
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
       setRealViewportHeightVar();
       scrollDownMessages();
-      if (activeEl === messageInput || activeEl === usernameInput) {
-        activeEl.parentNode.scrollIntoView(false);
-        if (gridWrapper.scrollTop > 0) {
-          gridWrapper.scrollBy(0, 1);
-        }
-      }
     }, 5);
   }
 }
