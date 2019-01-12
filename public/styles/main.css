@@ -20,31 +20,31 @@ body {
 }
 
 header {
-  display: grid;
-  grid-auto-rows: 100%;
-  grid-template-columns: 12% 76% 12%;
+  position: relative;
 }
 
 #settings-outer-wrapper {
   display: flex;
   flex-direction: column;
-}
-
-#settings-logo-wrapper {
-  text-align: left;
-  margin: auto 0 auto .2em;
-  display: flex;
+  position: absolute;
+  height: 100%;
 }
 
 #settings-logo {
+  border: 1px solid gray;
+  border-radius: 3px;
+  padding-left: 2px;
+  padding-right: 2px;
+  margin: auto 0 auto .4em;
   color: gray;
-  font-size: 2.5em;
+  font-size: 1.2em;
   cursor: pointer;
   transition: color .2s;
 }
 
 #settings-logo:hover {
   color: dimgray;
+  border-color: dimgray;
 }
 
 #settings-logo:active {
@@ -219,6 +219,12 @@ li {
   h2 {
     font-size: 1.4em;
   }
+
+  #settings-logo {
+    font-size: 1.2em;
+    margin-left: .2em;
+  }
+
 }
 
 @media screen and (max-height: 350px) {
