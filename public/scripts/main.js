@@ -84,34 +84,34 @@ function setUpMsgSending() {
     const gridWrapper = document.querySelector('#grid-wrapper');
 
     if (!isInViewport(this.parentNode.parentNode)) {
-      gridWrapper.addEventListener('scroll', scrollHandler.bind(this), { once: true });
+      setTimeout(() => {
+        gridWrapper.addEventListener('scroll', scrollHandler.bind(this), { once: true });
 
-      // will trigger scrollHandler if window/vh was resized (i.e., not in mobile Safari)
-      gridWrapper.scrollBy(0, -1);
+        // will trigger scrollHandler if window/vh was resized (i.e., not in mobile Safari) 
+        gridWrapper.scrollBy(0, -1);
 
-      // if scrollHandler wasn't triggered (didn't self-destruct), remove it (i.e., mobile Safari)
-      if (gridWrapper.scroll) {
-        gridWrapper.removeEventListener('scroll', scrollHandler);
-      }
+        // if scrollHandler wasn't triggered (didn't self-destruct), remove it (i.e., mobile Safari)
+        if (gridWrapper.scroll) {
+          gridWrapper.removeEventListener('scroll', scrollHandler);
+        }
+      }, 500);
     }
 
     function scrollHandler() {
-      setTimeout(() => {
-        let counter = 0;
-        const scrollInterval = setInterval(() => {
-          if (scrollIntoViewOptionsIsSupported) {
-            this.parentNode.scrollIntoView({ behavior: 'smooth', block: 'end' });
-          } else {
-            this.parentNode.scrollIntoView(false);
+      let counter = 0;
+      const scrollInterval = setInterval(() => {
+        if (scrollIntoViewOptionsIsSupported) {
+          this.parentNode.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        } else {
+          this.parentNode.scrollIntoView(false);
+        }
+        if (isInViewport(this.parentNode.parentNode) || counter === 4) {
+          if (gridWrapper.scrollTop > 0) {
+            gridWrapper.scrollBy(0, 1);
           }
-          if (isInViewport(this.parentNode.parentNode) || counter === 4) {
-            if (gridWrapper.scrollTop > 0) {
-              gridWrapper.scrollBy(0, 1);
-            }
-            clearInterval(scrollInterval);
-          }
-          counter++
-        }, 500);
+          clearInterval(scrollInterval);
+        }
+        counter++
       }, 500);
     }
 
