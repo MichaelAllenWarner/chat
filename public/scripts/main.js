@@ -106,11 +106,10 @@ function setUpMsgSending() {
 
       function scrollHandler() {
         setTimeout(() => {
-          this.value = '';
           if (gridWrapper.scrollTop > 0) {
             gridWrapper.scrollBy(0, 1);
           }
-        }, 300);
+        }, 500);
         if (scrollIntoViewOptionsIsSupported) {
           this.parentNode.scrollIntoView({ behavior: 'smooth', block: 'end' });
         } else {
@@ -145,7 +144,7 @@ function setUpMsgSending() {
       //   }
       //   counter++;
       // }, 300);
-    }, 500);
+    }, 400);
   }
 }
 
