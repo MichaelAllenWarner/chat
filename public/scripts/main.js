@@ -86,23 +86,15 @@ function setUpMsgSending() {
     setTimeout(() => {
       if (!isInViewport(this.parentNode.parentNode)) {
         gridWrapper.addEventListener('scroll', scrollHandler.bind(this), { once: true });
+
+        // will trigger scrollHandler if window/vh was resized (i.e., not in mobile Safari)
+        gridWrapper.scrollBy(0, -1);
+
+        // if scrollHandler wasn't triggered (didn't self-destruct), remove it (i.e., mobile Safari)
+        if (gridWrapper.scroll) {
+          gridWrapper.removeEventListener('scroll', scrollHandler);
+        }
       }
-
-      // will trigger scrollHandler if window/vh was resized (i.e., not in mobile Safari)
-      gridWrapper.scrollBy(0, 1);
-
-      // if scrollHandler wasn't triggered (didn't self-destruct), remove it (i.e., mobile Safari)
-      if (gridWrapper.scroll) {
-        gridWrapper.removeEventListener('scroll', scrollHandler);
-      }
-
-      function isInViewport(el) {
-        const rect = el.getBoundingClientRect();
-        return (rect.top >= 0
-                && rect.left >= 0
-                && rect.bottom <= (window.innerHeight + 1 || document.documentElement.clientHeight + 1)
-                && rect.right <= (window.innerWidth || document.documentElement.clientWidth));
-      };
 
       function scrollHandler() {
         if (scrollIntoViewOptionsIsSupported) {
@@ -114,8 +106,17 @@ function setUpMsgSending() {
           if (gridWrapper.scrollTop > 0) {
             gridWrapper.scrollBy(0, 1);
           }
-        }, 600);
+        }, 1000);
       }
+
+      function isInViewport(el) {
+        const rect = el.getBoundingClientRect();
+        return (rect.top >= 0
+                && rect.left >= 0
+                && rect.bottom <= (window.innerHeight + 1 || document.documentElement.clientHeight + 1)
+                && rect.right <= (window.innerWidth || document.documentElement.clientWidth));
+      };
+
       // // a (limited) intervallic do-while (to help guarantee scrolling, safely & cheaply)
       // let counter = 0;
       // const scrollInterval = setInterval(() => {
@@ -144,7 +145,7 @@ function setUpMsgSending() {
       //   }
       //   counter++;
       // }, 300);
-    }, 300);
+    }, 500);
   }
 }
 
