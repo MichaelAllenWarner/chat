@@ -185,10 +185,12 @@ function debouncedResizeCallback(setRealViewportHeightVar, scrollDownMessages) {
   const usernameInput = document.querySelector('#username-input');
   const activeElIsAnInput = (activeEl === messageInput || activeEl === usernameInput);
 
-  let resizeTimer;
+  // let resizeTimer;
   return () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(() => {
+    // clearTimeout(resizeTimer);
+    // resizeTimer = setTimeout(() => {
+      setRealViewportHeightVar();
+      scrollDownMessages();
       // on mobile, opening keyboard causes resize that
       // forces an upward scroll. So if necessary,
       // scroll 'back' to relevant div.
@@ -198,10 +200,8 @@ function debouncedResizeCallback(setRealViewportHeightVar, scrollDownMessages) {
           gridWrapper.scrollBy(0, 1);
         }
       }
-      setRealViewportHeightVar();
-      scrollDownMessages();
-    }, 250);
-  }
+  //   }, 250);
+  // }
 }
 
 function setRealViewportHeightVar() {
