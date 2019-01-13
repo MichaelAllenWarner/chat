@@ -105,13 +105,11 @@ function setUpMsgSending() {
       };
 
       function scrollHandler() {
-        // first 'reverse' the 1px scroll that triggered the handler
-        gridWrapper.scrollTop = 0;
         setTimeout(() => {
           if (gridWrapper.scrollTop > 0) {
             gridWrapper.scrollBy(0, 1);
           }
-        }, 500);
+        }, 800);
         if (scrollIntoViewOptionsIsSupported) {
           this.parentNode.scrollIntoView({ behavior: 'smooth', block: 'end' });
         } else {
