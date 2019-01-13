@@ -83,19 +83,20 @@ function setUpMsgSending() {
   function inputFocusHandler() {
     const gridWrapper = document.querySelector('#grid-wrapper');
 
-      if (!isInViewport(this.parentNode.parentNode)) {
-        gridWrapper.addEventListener('scroll', scrollHandler.bind(this), { once: true });
+    if (!isInViewport(this.parentNode.parentNode)) {
+      gridWrapper.addEventListener('scroll', scrollHandler.bind(this), { once: true });
 
-        // will trigger scrollHandler if window/vh was resized (i.e., not in mobile Safari)
-        gridWrapper.scrollBy(0, -1);
+      // will trigger scrollHandler if window/vh was resized (i.e., not in mobile Safari)
+      gridWrapper.scrollBy(0, -1);
 
-        // if scrollHandler wasn't triggered (didn't self-destruct), remove it (i.e., mobile Safari)
-        if (gridWrapper.scroll) {
-          gridWrapper.removeEventListener('scroll', scrollHandler);
-        }
+      // if scrollHandler wasn't triggered (didn't self-destruct), remove it (i.e., mobile Safari)
+      if (gridWrapper.scroll) {
+        gridWrapper.removeEventListener('scroll', scrollHandler);
       }
+    }
 
-      function scrollHandler() {
+    function scrollHandler() {
+      setTimeout(() => {
         let counter = 0;
         const scrollInterval = setInterval(() => {
           if (scrollIntoViewOptionsIsSupported) {
@@ -111,44 +112,45 @@ function setUpMsgSending() {
           }
           counter++
         }, 350);
-      }
+      }, 350);
+    }
 
-      function isInViewport(el) {
-        const rect = el.getBoundingClientRect();
-        return (rect.top >= 0
-                && rect.left >= 0
-                && rect.bottom <= (window.innerHeight + 1 || document.documentElement.clientHeight + 1)
-                && rect.right <= (window.innerWidth || document.documentElement.clientWidth));
-      };
+    function isInViewport(el) {
+      const rect = el.getBoundingClientRect();
+      return (rect.top >= 0
+              && rect.left >= 0
+              && rect.bottom <= (window.innerHeight + 1 || document.documentElement.clientHeight + 1)
+              && rect.right <= (window.innerWidth || document.documentElement.clientWidth));
+    };
 
-      // // a (limited) intervallic do-while (to help guarantee scrolling, safely & cheaply)
-      // let counter = 0;
-      // const scrollInterval = setInterval(() => {
-      //   try {
-      //     // after smooth scroll, scroll down a pixel to include div border if necessary
-      //     gridWrapper.addEventListener('scroll', () => {
-      //       setTimeout(() => {
-      //         if (gridWrapper.scrollTop > 0) {
-      //           gridWrapper.scrollBy(0, 1);
-      //         }
-      //       }, 300);
-      //     }, { once: true });
-      //     this.parentNode.scrollIntoView({ behavior: 'smooth', block: 'end' });
-      //   } catch (e) {
-      //     gridWrapper.addEventListener('scroll', () => {
-      //       setTimeout(() => {
-      //         if (gridWrapper.scrollTop > 0) {
-      //           gridWrapper.scrollBy(0, 1);
-      //         }
-      //       }, 300);
-      //     }, { once: true });
-      //     this.parentNode.scrollIntoView(false);
-      //   }
-      //   if (isInViewport(this.parentNode) || counter === 3) {
-      //     clearInterval(scrollInterval);
-      //   }
-      //   counter++;
-      // }, 300);
+    // // a (limited) intervallic do-while (to help guarantee scrolling, safely & cheaply)
+    // let counter = 0;
+    // const scrollInterval = setInterval(() => {
+    //   try {
+    //     // after smooth scroll, scroll down a pixel to include div border if necessary
+    //     gridWrapper.addEventListener('scroll', () => {
+    //       setTimeout(() => {
+    //         if (gridWrapper.scrollTop > 0) {
+    //           gridWrapper.scrollBy(0, 1);
+    //         }
+    //       }, 300);
+    //     }, { once: true });
+    //     this.parentNode.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    //   } catch (e) {
+    //     gridWrapper.addEventListener('scroll', () => {
+    //       setTimeout(() => {
+    //         if (gridWrapper.scrollTop > 0) {
+    //           gridWrapper.scrollBy(0, 1);
+    //         }
+    //       }, 300);
+    //     }, { once: true });
+    //     this.parentNode.scrollIntoView(false);
+    //   }
+    //   if (isInViewport(this.parentNode) || counter === 3) {
+    //     clearInterval(scrollInterval);
+    //   }
+    //   counter++;
+    // }, 300);
   }
 }
 
