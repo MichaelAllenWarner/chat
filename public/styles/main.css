@@ -1,7 +1,7 @@
 html {
   box-sizing: border-box;
   height: 100vh; /* fallback */
-  height: calc(var(--vh, 1vh) * 100); /* found on CSS Tricks */
+  /*height: calc(var(--vh, 1vh) * 100);*/ /* found on CSS Tricks */
 }
 
 *, *:before, *:after {

@@ -295,7 +295,7 @@ function debouncedResizeCallback(setRealViewportHeightVar, scrollDownMessages) {
   } else {
     // debouncing on mobile / touch screen is causing problems
     return () => {
-      setRealViewportHeightVar();
+      // setRealViewportHeightVar();
       scrollDownMessages();
     };
   }
