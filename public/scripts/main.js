@@ -189,21 +189,18 @@ function debouncedResizeCallback(setRealViewportHeightVar, scrollDownMessages) {
   return () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-      setRealViewportHeightVar();
-      scrollDownMessages();
-
       // on mobile, opening keyboard causes resize that
       // forces an upward scroll. So if necessary,
       // scroll 'back' to relevant div.
       if (activeElIsAnInput && isMobile) {
-        activeEl.blur();
-        activeEl.focus();
         activeEl.parentNode.scrollIntoView(false);
         if (gridWrapper.scrollTop > 0) {
           gridWrapper.scrollBy(0, 1);
         }
       }
-    }, 100);
+      setRealViewportHeightVar();
+      scrollDownMessages();
+    }, 250);
   }
 }
 
