@@ -145,7 +145,7 @@ function setUpMsgSending() {
       //   }
       //   counter++;
       // }, 300);
-    }, 300);
+    }, 500);
   }
 }
 
