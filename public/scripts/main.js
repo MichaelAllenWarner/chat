@@ -75,8 +75,10 @@ function setUpMsgSending() {
   // which makes #grid-wrapper scroll all the way up. Note that on some mobile browsers (Safari),
   // the soft keyboard does NOT cause a window (vh?) resize, and the focus-handler
   // gracefully degrades in that case.
-  messageInput.addEventListener('focus', inputFocusHandler);
-  usernameInput.addEventListener('focus', inputFocusHandler);
+  if (isTouchScreen) {
+    messageInput.addEventListener('focus', inputFocusHandler);
+    usernameInput.addEventListener('focus', inputFocusHandler);
+  }
 
   function inputFocusHandler() {
     const gridWrapper = document.querySelector('#grid-wrapper');
@@ -97,16 +99,21 @@ function setUpMsgSending() {
       }
 
       function scrollHandler() {
-        if (scrollIntoViewOptionsIsSupported) {
-          this.parentNode.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        } else {
-          this.parentNode.scrollIntoView(false);
-        }
-        setTimeout(() => {
-          if (gridWrapper.scrollTop > 0) {
-            gridWrapper.scrollBy(0, 1);
+        let counter = 0;
+        const scrollInterval = setInterval(() => {
+          if (scrollIntoViewOptionsIsSupported) {
+            this.parentNode.scrollIntoView({ behavior: 'smooth', block: 'end' });
+          } else {
+            this.parentNode.scrollIntoView(false);
           }
-        }, 1000);
+          if (isInViewport(this.parentNode.parentNode) || counter === 4) {
+            if (gridWrapper.scrollTop > 0) {
+              gridWrapper.scrollBy(0, 1);
+            }
+            clearInterval(scrollInterval);
+          }
+          counter++
+        }, 350);
       }
 
       function isInViewport(el) {
