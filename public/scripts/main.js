@@ -201,7 +201,7 @@ function debouncedResizeCallback(setRealViewportHeightVar, scrollDownMessages) {
         }
       }
   //   }, 250);
-  // }
+  }
 }
 
 function setRealViewportHeightVar() {
