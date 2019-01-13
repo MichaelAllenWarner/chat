@@ -196,12 +196,14 @@ function debouncedResizeCallback(setRealViewportHeightVar, scrollDownMessages) {
       // forces an upward scroll. So if necessary,
       // scroll 'back' to relevant div.
       if (activeElIsAnInput && isMobile) {
+        activeEl.blur();
+        activeEl.focus();
         activeEl.parentNode.scrollIntoView(false);
         if (gridWrapper.scrollTop > 0) {
           gridWrapper.scrollBy(0, 1);
         }
       }
-    }, 5);
+    }, 100);
   }
 }
 
