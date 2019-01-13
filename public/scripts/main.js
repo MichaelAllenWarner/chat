@@ -111,8 +111,8 @@ function setUpMsgSending() {
             clearInterval(scrollInterval);
           }
           counter++
-        }, 350);
-      }, 350);
+        }, 500);
+      }, 500);
     }
 
     function isInViewport(el) {
