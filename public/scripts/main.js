@@ -89,7 +89,6 @@ function setUpMsgSending() {
       }
 
       // will trigger scrollHandler if window/vh was resized (i.e., not in mobile Safari)
-      gridWrapper.scrollBy(0, 1);
       gridWrapper.scrollBy(0, -1);
 
       // if scrollHandler wasn't triggered (didn't self-destruct), remove it (i.e., mobile Safari)
