@@ -89,7 +89,7 @@ function setUpMsgSending() {
       }
 
       // will trigger scrollHandler if window/vh was resized (i.e., not in mobile Safari)
-      gridWrapper.scrollBy(0, -1);
+      gridWrapper.scrollBy(0, 1);
 
       // if scrollHandler wasn't triggered (didn't self-destruct), remove it (i.e., mobile Safari)
       if (gridWrapper.scroll) {
@@ -105,6 +105,8 @@ function setUpMsgSending() {
       };
 
       function scrollHandler() {
+        // first 'reverse' the 1px scroll that triggered the handler
+        gridWrapper.scrollBy(0, -1);
         setTimeout(() => {
           if (gridWrapper.scrollTop > 0) {
             gridWrapper.scrollBy(0, 1);
