@@ -1,17 +1,29 @@
 const HOST = location.origin.replace(/^http/, 'ws');
 const ws = new WebSocket(HOST);
 
-const isMobile =
-  (navigator.userAgent.match(/Android/i)
-    || navigator.userAgent.match(/webOS/i)
-    || navigator.userAgent.match(/iPhone/i)
-    || navigator.userAgent.match(/iPad/i)
-    || navigator.userAgent.match(/iPod/i)
-    || navigator.userAgent.match(/BlackBerry/i)
-    || navigator.userAgent.match(/Windows Phone/i));
+const isTouchScreen = ('ontouchstart' in document.documentElement); // for working w/ virtual keyboard
+
+const scrollIntoViewOptionsIsSupported = (function test() {
+  let res = false;
+  const a = document.createElement('a');
+  const csy = window.pageYOffset;
+  const csx = window.pageXOffset;
+
+  a.style.cssText = 'position: absolute; top: 0px; width: 1px; height: ' + (window.innerHeight + 1) + 'px;';
+
+  // Test
+  document.body.appendChild(a);
+  a.scrollIntoView({ block: 'end' });
+  res = (a.getBoundingClientRect().top === -1);
+  document.body.removeChild(a);
+
+  // Revert and return
+  window.scrollTo(csx, csy);
+  return res;
+})();
+
 
 const ids = {}; // one publicid, one privateid, server will send
-
 
 // set up websocket behavior
 setUpMsgSending();
@@ -50,37 +62,90 @@ function setUpMsgSending() {
         ws.send(JSON.stringify(outgoingMsgObj));
         messageInput.value = '';
 
-        // hide keyboard on mobile after submit
-        if (isMobile) {
+        // hide virtual keyboard after submit on touch screens
+        if (isTouchScreen) {
           this.blur();
         }
       }
     };
   }
 
-  messageInput.addEventListener('focus', inputFocusCallback);
-  usernameInput.addEventListener('focus', inputFocusCallback);
+  // mainly for scrolling to relevant div on mobile when soft keyboard comes up
+  // b/c the window (vh?) resize triggers #grid-wrapper to change grid-template-rows to 100% 100%,
+  // which makes #grid-wrapper scroll all the way up. Note that on some mobile browsers (Safari),
+  // the soft keyboard does NOT cause a window (vh?) resize, and the focus-handler
+  // gracefully degrades in that case.
+  messageInput.addEventListener('focus', inputFocusHandler);
+  usernameInput.addEventListener('focus', inputFocusHandler);
 
-  function inputFocusCallback() {
+  function inputFocusHandler() {
     const gridWrapper = document.querySelector('#grid-wrapper');
-    setTimeout(() => {
-      let counter = 0;
-      do {
-        this.parentNode.scrollIntoView(false);
-        if (gridWrapper.scrollTop > 0) {
-          gridWrapper.scrollBy(0, 1);
-        }
-        counter++;
-      } while ((counter < 1000) || !isInViewport(this));
-    }, 300);
 
-    function isInViewport(el) {
-      const rect = el.getBoundingClientRect();
-      return (rect.top >= 0
-              && rect.left >= 0
-              && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
-              && rect.right <= (window.innerWidth || document.documentElement.clientWidth));
-    };
+    // Timeout delay to make sure browsers actually DO the scrolling
+    // (probably timing issue w/ window-resizing handler)
+    setTimeout(() => {
+      if (!isInViewport(this.parentNode.parentNode)) {
+        gridWrapper.addEventListener('scroll', scrollHandler.bind(this), { once: true });
+      }
+
+      // will trigger scrollHandler if window/vh was resized (i.e., not in mobile Safari)
+      gridWrapper.scrollBy(0, 1);
+
+      // if scrollHandler wasn't triggered (didn't self-destruct), remove it (i.e., mobile Safari)
+      if (gridWrapper.scroll) {
+        gridWrapper.removeEventListener('scroll', scrollHandler);
+      }
+
+      function isInViewport(el) {
+        const rect = el.getBoundingClientRect();
+        return (rect.top >= 0
+                && rect.left >= 0
+                && rect.bottom <= (window.innerHeight + 1 || document.documentElement.clientHeight + 1)
+                && rect.right <= (window.innerWidth || document.documentElement.clientWidth));
+      };
+
+      function scrollHandler() {
+        setTimeout(() => {
+          this.value = '';
+          if (gridWrapper.scrollTop > 0) {
+            gridWrapper.scrollBy(0, 1);
+          }
+        }, 300);
+        if (scrollIntoViewOptionsIsSupported) {
+          this.parentNode.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        } else {
+          this.parentNode.scrollIntoView(false);
+        }
+      }
+      // // a (limited) intervallic do-while (to help guarantee scrolling, safely & cheaply)
+      // let counter = 0;
+      // const scrollInterval = setInterval(() => {
+      //   try {
+      //     // after smooth scroll, scroll down a pixel to include div border if necessary
+      //     gridWrapper.addEventListener('scroll', () => {
+      //       setTimeout(() => {
+      //         if (gridWrapper.scrollTop > 0) {
+      //           gridWrapper.scrollBy(0, 1);
+      //         }
+      //       }, 300);
+      //     }, { once: true });
+      //     this.parentNode.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      //   } catch (e) {
+      //     gridWrapper.addEventListener('scroll', () => {
+      //       setTimeout(() => {
+      //         if (gridWrapper.scrollTop > 0) {
+      //           gridWrapper.scrollBy(0, 1);
+      //         }
+      //       }, 300);
+      //     }, { once: true });
+      //     this.parentNode.scrollIntoView(false);
+      //   }
+      //   if (isInViewport(this.parentNode) || counter === 3) {
+      //     clearInterval(scrollInterval);
+      //   }
+      //   counter++;
+      // }, 300);
+    }, 300);
   }
 }
 
@@ -195,18 +260,23 @@ function setUpMenuDropdown() {
     menu.classList.toggle('menu-in');
     menu.classList.toggle('menu-out');
   });
-  document.addEventListener('click', function(event) {
-    if (menu.classList.contains('menu-in')
-        && !menu.contains(event.target)
-        && !menuLogo.contains(event.target)) {
-      menuLogo.click();
-    }
-  });
+  document.addEventListener('touchstart', hideMenuCallback());
+  document.addEventListener('click', hideMenuCallback());
+
+  function hideMenuCallback() {
+    return event => {
+      if (menu.classList.contains('menu-in')
+          && !menu.contains(event.target)
+          && !menuLogo.contains(event.target)) {
+        menuLogo.click();
+      }
+    };
+  }
 }
 
 function debouncedResizeCallback(setRealViewportHeightVar, scrollDownMessages) {
-  // debounce resize event if not on mobile
-  if (!isMobile) {
+  // debounce resize event if not on touch screen
+  if (!isTouchScreen) {
     let resizeTimer;
     return () => {
       clearTimeout(resizeTimer);
@@ -216,7 +286,7 @@ function debouncedResizeCallback(setRealViewportHeightVar, scrollDownMessages) {
       }, 250);
     }
   } else {
-    // debouncing on mobile is bad visually
+    // debouncing on mobile / touch screen is causing problems
     return () => {
       setRealViewportHeightVar();
       scrollDownMessages();
