@@ -106,7 +106,7 @@ function setUpMsgSending() {
 
       function scrollHandler() {
         // first 'reverse' the 1px scroll that triggered the handler
-        gridWrapper.scrollBy(0, -1);
+        gridWrapper.scrollTop = 0;
         setTimeout(() => {
           if (gridWrapper.scrollTop > 0) {
             gridWrapper.scrollBy(0, 1);
