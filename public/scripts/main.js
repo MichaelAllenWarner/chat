@@ -179,16 +179,9 @@ function setUpMenuDropdown() {
 }
 
 function debouncedResizeCallback(setRealViewportHeightVar, scrollDownMessages) {
-  const gridWrapper = document.querySelector('#grid-wrapper');
-  const activeEl = document.activeElement;
-  const messageInput = document.querySelector('#message-input');
-  const usernameInput = document.querySelector('#username-input');
-  const activeElIsAnInput = (activeEl === messageInput || activeEl === usernameInput);
-
-  let resizeTimer;
-
   // debounce resize event if not on mobile
   if (!isMobile) {
+    let resizeTimer;
     return () => {
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
@@ -201,18 +194,26 @@ function debouncedResizeCallback(setRealViewportHeightVar, scrollDownMessages) {
     // forces an upward scroll, and debounce
     // causes unpleasant screen jump. So no debounce, and if necessary,
     // scroll 'back' to relevant div. Still not always working.
+    const gridWrapper = document.querySelector('#grid-wrapper');
+    const activeEl = document.activeElement;
+    const messageInput = document.querySelector('#message-input');
+    const usernameInput = document.querySelector('#username-input');
+    const activeElIsAnInput = (activeEl === messageInput || activeEl === usernameInput);
+
     return () => {
       setRealViewportHeightVar();
       scrollDownMessages();
 
       // dangerous loop?
       if (activeElIsAnInput) {
-        do {
-          activeEl.parentNode.scrollIntoView(false);
-          if (gridWrapper.scrollTop > 0) {
-            gridWrapper.scrollBy(0, 1);
-          }
-        } while (!isInViewport(activeEl));
+        setTimeout(() => {
+          do {
+            activeEl.parentNode.scrollIntoView(false);
+            if (gridWrapper.scrollTop > 0) {
+              gridWrapper.scrollBy(0, 1);
+            }
+          } while (!isInViewport(activeEl));
+        }, 50);
 
         function isInViewport(el) {
           const rect = el.getBoundingClientRect();
