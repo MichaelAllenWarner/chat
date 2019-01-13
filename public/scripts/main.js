@@ -185,22 +185,44 @@ function debouncedResizeCallback(setRealViewportHeightVar, scrollDownMessages) {
   const usernameInput = document.querySelector('#username-input');
   const activeElIsAnInput = (activeEl === messageInput || activeEl === usernameInput);
 
-  // let resizeTimer;
-  return () => {
-    // clearTimeout(resizeTimer);
-    // resizeTimer = setTimeout(() => {
+  let resizeTimer;
+
+  // debounce resize event if not on mobile
+  if (!isMobile) {
+    return () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        setRealViewportHeightVar();
+        scrollDownMessages();
+      }, 250);
+    }
+  } else {
+    // on mobile, opening keyboard causes resize that
+    // forces an upward scroll, and debounce
+    // causes unpleasant screen jump. So no debounce, and if necessary,
+    // scroll 'back' to relevant div. Still not always working.
+    return () => {
       setRealViewportHeightVar();
       scrollDownMessages();
-      // on mobile, opening keyboard causes resize that
-      // forces an upward scroll. So if necessary,
-      // scroll 'back' to relevant div.
-      if (activeElIsAnInput && isMobile) {
-        activeEl.parentNode.scrollIntoView(false);
-        if (gridWrapper.scrollTop > 0) {
-          gridWrapper.scrollBy(0, 1);
-        }
+
+      // dangerous loop?
+      if (activeElIsAnInput) {
+        do {
+          activeEl.parentNode.scrollIntoView(false);
+          if (gridWrapper.scrollTop > 0) {
+            gridWrapper.scrollBy(0, 1);
+          }
+        } while (!isInViewport(activeEl));
+
+        function isInViewport(el) {
+          const rect = el.getBoundingClientRect();
+          return (rect.top >= 0
+                  && rect.left >= 0
+                  && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+                  && rect.right <= (window.innerWidth || document.documentElement.clientWidth));
+        };
       }
-  //   }, 250);
+    };
   }
 }
 
