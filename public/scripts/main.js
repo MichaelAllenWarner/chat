@@ -83,9 +83,6 @@ function setUpMsgSending() {
   function inputFocusHandler() {
     const gridWrapper = document.querySelector('#grid-wrapper');
 
-    // Timeout delay to make sure browsers actually DO the scrolling
-    // (probably timing issue w/ window-resizing handler)
-    setTimeout(() => {
       if (!isInViewport(this.parentNode.parentNode)) {
         gridWrapper.addEventListener('scroll', scrollHandler.bind(this), { once: true });
 
@@ -152,7 +149,6 @@ function setUpMsgSending() {
       //   }
       //   counter++;
       // }, 300);
-    }, 500);
   }
 }
 
@@ -295,7 +291,7 @@ function debouncedResizeCallback(setRealViewportHeightVar, scrollDownMessages) {
   } else {
     // debouncing on mobile / touch screen is causing problems
     return () => {
-      // setRealViewportHeightVar();
+      setRealViewportHeightVar();
       scrollDownMessages();
     };
   }
