@@ -89,7 +89,7 @@ function setUpMsgSending() {
       }
 
       // will trigger scrollHandler if window/vh was resized (i.e., not in mobile Safari)
-      gridWrapper.scrollTop = 0;
+      gridWrapper.scrollBy(0, 1);
 
       // if scrollHandler wasn't triggered (didn't self-destruct), remove it (i.e., mobile Safari)
       if (gridWrapper.scroll) {
@@ -105,16 +105,16 @@ function setUpMsgSending() {
       };
 
       function scrollHandler() {
-        setTimeout(() => {
-          if (gridWrapper.scrollTop > 0) {
-            gridWrapper.scrollBy(0, 1);
-          }
-        }, 1000);
         if (scrollIntoViewOptionsIsSupported) {
           this.parentNode.scrollIntoView({ behavior: 'smooth', block: 'end' });
         } else {
           this.parentNode.scrollIntoView(false);
         }
+        setTimeout(() => {
+          if (gridWrapper.scrollTop > 0) {
+            gridWrapper.scrollBy(0, 1);
+          }
+        }, 600);
       }
       // // a (limited) intervallic do-while (to help guarantee scrolling, safely & cheaply)
       // let counter = 0;
@@ -144,7 +144,7 @@ function setUpMsgSending() {
       //   }
       //   counter++;
       // }, 300);
-    }, 400);
+    }, 300);
   }
 }
 
