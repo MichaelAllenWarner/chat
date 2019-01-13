@@ -89,7 +89,7 @@ function setUpMsgSending() {
       }
 
       // will trigger scrollHandler if window/vh was resized (i.e., not in mobile Safari)
-      gridWrapper.scrollBy(0, 1);
+      gridWrapper.scrollTop = 0;
 
       // if scrollHandler wasn't triggered (didn't self-destruct), remove it (i.e., mobile Safari)
       if (gridWrapper.scroll) {
@@ -106,11 +106,10 @@ function setUpMsgSending() {
 
       function scrollHandler() {
         setTimeout(() => {
-          this.value = gridWrapper.scrollTop;
-          if (gridWrapper.scrollTop > 1) {
+          if (gridWrapper.scrollTop > 0) {
             gridWrapper.scrollBy(0, 1);
           }
-        }, 600);
+        }, 1000);
         if (scrollIntoViewOptionsIsSupported) {
           this.parentNode.scrollIntoView({ behavior: 'smooth', block: 'end' });
         } else {
