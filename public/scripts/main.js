@@ -106,6 +106,7 @@ function setUpMsgSending() {
 
       function scrollHandler() {
         setTimeout(() => {
+          this.value = gridWrapper.scrollTop;
           if (gridWrapper.scrollTop > 1) {
             gridWrapper.scrollBy(0, 1);
           }
