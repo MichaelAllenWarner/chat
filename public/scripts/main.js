@@ -23,6 +23,7 @@ window.addEventListener('resize', debouncedResizeCallback(setRealViewportHeightV
 setRealViewportHeightVar();
 
 
+
 function setUpMsgSending() {
   const messageInput = document.querySelector('#message-input');
   const usernameInput = document.querySelector('#username-input');
@@ -54,6 +55,31 @@ function setUpMsgSending() {
           this.blur();
         }
       }
+    };
+  }
+
+  messageInput.addEventListener('focus', inputFocusCallback);
+  usernameInput.addEventListener('focus', inputFocusCallback);
+
+  function inputFocusCallback() {
+    const gridWrapper = document.querySelector('#grid-wrapper');
+    setTimeout(() => {
+      let counter = 0;
+      do {
+        this.parentNode.scrollIntoView(false);
+        if (gridWrapper.scrollTop > 0) {
+          gridWrapper.scrollBy(0, 1);
+        }
+        counter++;
+      } while ((counter < 1000) || !isInViewport(this));
+    }, 300);
+
+    function isInViewport(el) {
+      const rect = el.getBoundingClientRect();
+      return (rect.top >= 0
+              && rect.left >= 0
+              && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+              && rect.right <= (window.innerWidth || document.documentElement.clientWidth));
     };
   }
 }
@@ -190,39 +216,10 @@ function debouncedResizeCallback(setRealViewportHeightVar, scrollDownMessages) {
       }, 250);
     }
   } else {
-    // on mobile, opening keyboard causes resize that
-    // forces an upward scroll, and debounce
-    // causes unpleasant screen jump. So no debounce, and if necessary,
-    // scroll 'back' to relevant div. Still not always working.
-    const gridWrapper = document.querySelector('#grid-wrapper');
-    const activeEl = document.activeElement;
-    const messageInput = document.querySelector('#message-input');
-    const usernameInput = document.querySelector('#username-input');
-    const activeElIsAnInput = (activeEl === messageInput || activeEl === usernameInput);
-
+    // debouncing on mobile is bad visually
     return () => {
       setRealViewportHeightVar();
       scrollDownMessages();
-
-      // dangerous loop?
-      if (activeElIsAnInput) {
-        setTimeout(() => {
-          do {
-            activeEl.parentNode.scrollIntoView(false);
-            if (gridWrapper.scrollTop > 0) {
-              gridWrapper.scrollBy(0, 1);
-            }
-          } while (!isInViewport(activeEl));
-        }, 50);
-
-        function isInViewport(el) {
-          const rect = el.getBoundingClientRect();
-          return (rect.top >= 0
-                  && rect.left >= 0
-                  && rect.bottom <= (window.innerHeight || document.documentElement.clientHeight)
-                  && rect.right <= (window.innerWidth || document.documentElement.clientWidth));
-        };
-      }
     };
   }
 }
