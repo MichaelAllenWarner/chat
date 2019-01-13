@@ -106,10 +106,10 @@ function setUpMsgSending() {
 
       function scrollHandler() {
         setTimeout(() => {
-          if (gridWrapper.scrollTop > 0) {
+          if (gridWrapper.scrollTop > 1) {
             gridWrapper.scrollBy(0, 1);
           }
-        }, 800);
+        }, 600);
         if (scrollIntoViewOptionsIsSupported) {
           this.parentNode.scrollIntoView({ behavior: 'smooth', block: 'end' });
         } else {
