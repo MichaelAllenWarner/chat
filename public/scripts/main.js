@@ -9,8 +9,8 @@ setUpMsgReceiving();
 
 setUpMenuDropdown();
 
-window.addEventListener('resize', resizeCallback(setRealViewportHeightVar, scrollDownMessages));
-setRealViewportHeightVar();
+setUpResponsiveLayout();
+
 
 
 
@@ -39,12 +39,6 @@ function setUpMsgSending() {
         };
         ws.send(JSON.stringify(outgoingMsgObj));
         messageInput.value = '';
-
-        // hide virtual keyboard after submit on touch screens
-        const isTouchScreen = ('ontouchstart' in document.documentElement);
-        if (isTouchScreen) {
-          this.blur();
-        }
       }
     };
   }
@@ -175,55 +169,97 @@ function setUpMenuDropdown() {
   }
 }
 
-function resizeCallback(setRealViewportHeightVar, scrollDownMessages) {
-  const isTouchScreen = ('ontouchstart' in document.documentElement);
 
-  // debounce resize event if not on touch screen
-  if (!isTouchScreen) {
-    let resizeTimer;
+function setUpResponsiveLayout() {
+
+  // initialize real viewport height CSS variable
+  setRealViewportHeight();
+
+
+  // use media query to catch soft-keyboard toggles (hopefully!) and handle them specially
+
+  const softKeyboardToggleMQ = window.matchMedia('screen and (max-height: 501px)');
+  softKeyboardToggleMQ.addListener(softKeyboardToggleMQCallback(setRealViewportHeight, scrollDownMessages, scrollToActiveElIfNeeded));
+
+  function softKeyboardToggleMQCallback(setRealViewportHeight, scrollDownMessages, scrollToActiveElIfNeeded) {
     return () => {
+      // immediately scroll down messages & reset height on soft-keyboard toggle
+      setRealViewportHeight();
+      scrollDownMessages();
+
+      // if keyboard now up, scroll to active element as needed and then blur() on submit (misses mobile Safari)
+      const softKeyboardNowUp = softKeyboardToggleMQ.matches;
+      if (softKeyboardNowUp) {
+        scrollToActiveElIfNeeded();
+        document.activeElement.addEventListener('keyup', hideSoftKeyboard);
+
+        function hideSoftKeyboard(event) {
+          if (event.key === 'Enter') {
+            this.blur();
+            this.removeEventListener('keyup', hideSoftKeyboard);
+          }
+        };
+      }
+    };
+  }
+
+
+  // if resize isn't likely to be a soft-keyboard toggle, use debouncing
+
+  window.addEventListener('resize', resizeCallback(setRealViewportHeight, scrollDownMessages, scrollToActiveElIfNeeded));
+
+  function resizeCallback(setRealViewportHeight, scrollDownMessages, scrollToActiveElIfNeeded) {
+    let resizeTimer;
+
+    return () => {
+
+      // if it's likely mobile landscape, don't wait for debounce to adjust height
+      const resizeImmediately = window.matchMedia('screen and (min-width: 601px) and (max-height: 350px)').matches;
+      if (resizeImmediately) {
+        setRealViewportHeight();
+      }
+
       clearTimeout(resizeTimer);
+
       resizeTimer = setTimeout(() => {
-        setRealViewportHeightVar();
         scrollDownMessages();
+
+        // only resize if the soft-keyboard toggle handler didn't already take care of it
+        const realViewportHeight = window.innerHeight * 0.01;
+        const currCSSVal = document.documentElement.style.getPropertyValue('--vh');
+        if (`${realViewportHeight}px` !== currCSSVal) {
+          setRealViewportHeight();
+        }
+        scrollToActiveElIfNeeded();
       }, 250);
     };
   }
 
-  /*
-  *   on touch screen / mobile:
-  *   A) don't debounce the resize event -- causes timing issues with B:
-  *   B) scroll to active element as necessary (otherwise scroll goes all the way up
-  *     after soft keyboard appears on most mobile browsers, likely b/c of #grid-wrapper
-  *     CSS media query that changes grid-template-rows)
-  */
-  else {
-    return () => {
-      setRealViewportHeightVar();
-      scrollDownMessages();
 
-      const messageInput = document.querySelector('#message-input');
-      const usernameInput = document.querySelector('#username-input');
-      const activeEl = document.activeElement;
-      const mustScroll = (activeEl === messageInput || activeEl === usernameInput);
+  // responsiveness helper functions:
 
-      if (mustScroll) {
-        const gridWrapper = document.querySelector('#grid-wrapper');
-        activeEl.parentNode.scrollIntoView(false);
-        if (gridWrapper.scrollTop > 0) {
-          gridWrapper.scrollBy(0, 1);
-        }
+  function scrollToActiveElIfNeeded() {
+    const messageInput = document.querySelector('#message-input');
+    const usernameInput = document.querySelector('#username-input');
+    const activeEl = document.activeElement;
+    const mustScroll = (activeEl === messageInput || activeEl === usernameInput);
+
+    if (mustScroll) {
+      activeEl.parentNode.scrollIntoView(false);
+      const gridWrapper = document.querySelector('#grid-wrapper');
+      if (gridWrapper.scrollTop > 0) {
+        gridWrapper.scrollBy(0, 1);
       }
-    };
+    }
   }
-}
 
-function setRealViewportHeightVar() {
-  const vh = window.innerHeight * 0.01;
-  document.documentElement.style.setProperty('--vh', `${vh}px`);
-}
+  function setRealViewportHeight() {
+    const realViewportHeight = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${realViewportHeight}px`);
+  }
 
-function scrollDownMessages() {
-  const messages = document.querySelector('#messages');
-  messages.scrollTop = messages.scrollHeight - messages.clientHeight;
+  function scrollDownMessages() {
+    const messages = document.querySelector('#messages');
+    messages.scrollTop = messages.scrollHeight - messages.clientHeight;
+  }
 }
