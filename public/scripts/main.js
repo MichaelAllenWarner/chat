@@ -1,28 +1,6 @@
 const HOST = location.origin.replace(/^http/, 'ws');
 const ws = new WebSocket(HOST);
 
-const isTouchScreen = ('ontouchstart' in document.documentElement); // for working w/ virtual keyboard
-
-const scrollIntoViewOptionsIsSupported = (function test() {
-  let res = false;
-  const a = document.createElement('a');
-  const csy = window.pageYOffset;
-  const csx = window.pageXOffset;
-
-  a.style.cssText = 'position: absolute; top: 0px; width: 1px; height: ' + (window.innerHeight + 1) + 'px;';
-
-  // Test
-  document.body.appendChild(a);
-  a.scrollIntoView({ block: 'end' });
-  res = (a.getBoundingClientRect().top === -1);
-  document.body.removeChild(a);
-
-  // Revert and return
-  window.scrollTo(csx, csy);
-  return res;
-})();
-
-
 const ids = {}; // one publicid, one privateid, server will send
 
 // set up websocket behavior
@@ -31,7 +9,7 @@ setUpMsgReceiving();
 
 setUpMenuDropdown();
 
-window.addEventListener('resize', debouncedResizeCallback(setRealViewportHeightVar, scrollDownMessages));
+window.addEventListener('resize', resizeCallback(setRealViewportHeightVar, scrollDownMessages));
 setRealViewportHeightVar();
 
 
@@ -63,94 +41,12 @@ function setUpMsgSending() {
         messageInput.value = '';
 
         // hide virtual keyboard after submit on touch screens
+        const isTouchScreen = ('ontouchstart' in document.documentElement);
         if (isTouchScreen) {
           this.blur();
         }
       }
     };
-  }
-
-  // mainly for scrolling to relevant div on mobile when soft keyboard comes up
-  // b/c the window (vh?) resize triggers #grid-wrapper to change grid-template-rows to 100% 100%,
-  // which makes #grid-wrapper scroll all the way up. Note that on some mobile browsers (Safari),
-  // the soft keyboard does NOT cause a window (vh?) resize, and the focus-handler
-  // gracefully degrades in that case.
-  if (isTouchScreen) {
-    messageInput.addEventListener('focus', inputFocusHandler);
-    usernameInput.addEventListener('focus', inputFocusHandler);
-  }
-
-  function inputFocusHandler() {
-    const gridWrapper = document.querySelector('#grid-wrapper');
-
-    if (!isInViewport(this.parentNode.parentNode)) {
-      setTimeout(() => {
-        gridWrapper.addEventListener('scroll', scrollHandler.bind(this), { once: true });
-
-        // will trigger scrollHandler if window/vh was resized (i.e., not in mobile Safari) 
-        gridWrapper.scrollBy(0, -1);
-
-        // if scrollHandler wasn't triggered (didn't self-destruct), remove it (i.e., mobile Safari)
-        if (gridWrapper.scroll) {
-          gridWrapper.removeEventListener('scroll', scrollHandler);
-        }
-      }, 500);
-    }
-
-    function scrollHandler() {
-      let counter = 0;
-      const scrollInterval = setInterval(() => {
-        if (scrollIntoViewOptionsIsSupported) {
-          this.parentNode.scrollIntoView({ behavior: 'smooth', block: 'end' });
-        } else {
-          this.parentNode.scrollIntoView(false);
-        }
-        if (isInViewport(this.parentNode.parentNode) || counter === 4) {
-          if (gridWrapper.scrollTop > 0) {
-            gridWrapper.scrollBy(0, 1);
-          }
-          clearInterval(scrollInterval);
-        }
-        counter++
-      }, 500);
-    }
-
-    function isInViewport(el) {
-      const rect = el.getBoundingClientRect();
-      return (rect.top >= 0
-              && rect.left >= 0
-              && rect.bottom <= (window.innerHeight + 1 || document.documentElement.clientHeight + 1)
-              && rect.right <= (window.innerWidth || document.documentElement.clientWidth));
-    };
-
-    // // a (limited) intervallic do-while (to help guarantee scrolling, safely & cheaply)
-    // let counter = 0;
-    // const scrollInterval = setInterval(() => {
-    //   try {
-    //     // after smooth scroll, scroll down a pixel to include div border if necessary
-    //     gridWrapper.addEventListener('scroll', () => {
-    //       setTimeout(() => {
-    //         if (gridWrapper.scrollTop > 0) {
-    //           gridWrapper.scrollBy(0, 1);
-    //         }
-    //       }, 300);
-    //     }, { once: true });
-    //     this.parentNode.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    //   } catch (e) {
-    //     gridWrapper.addEventListener('scroll', () => {
-    //       setTimeout(() => {
-    //         if (gridWrapper.scrollTop > 0) {
-    //           gridWrapper.scrollBy(0, 1);
-    //         }
-    //       }, 300);
-    //     }, { once: true });
-    //     this.parentNode.scrollIntoView(false);
-    //   }
-    //   if (isInViewport(this.parentNode) || counter === 3) {
-    //     clearInterval(scrollInterval);
-    //   }
-    //   counter++;
-    // }, 300);
   }
 }
 
@@ -279,7 +175,9 @@ function setUpMenuDropdown() {
   }
 }
 
-function debouncedResizeCallback(setRealViewportHeightVar, scrollDownMessages) {
+function resizeCallback(setRealViewportHeightVar, scrollDownMessages) {
+  const isTouchScreen = ('ontouchstart' in document.documentElement);
+
   // debounce resize event if not on touch screen
   if (!isTouchScreen) {
     let resizeTimer;
@@ -289,12 +187,33 @@ function debouncedResizeCallback(setRealViewportHeightVar, scrollDownMessages) {
         setRealViewportHeightVar();
         scrollDownMessages();
       }, 250);
-    }
-  } else {
-    // debouncing on mobile / touch screen is causing problems
+    };
+  }
+
+  /*
+  *   on touch screen / mobile:
+  *   A) don't debounce the resize event -- causes timing issues with B:
+  *   B) scroll to active element as necessary (otherwise scroll goes all the way up
+  *     after soft keyboard appears on most mobile browsers, likely b/c of #grid-wrapper
+  *     CSS media query that changes grid-template-rows)
+  */
+  else {
     return () => {
       setRealViewportHeightVar();
       scrollDownMessages();
+
+      const messageInput = document.querySelector('#message-input');
+      const usernameInput = document.querySelector('#username-input');
+      const activeEl = document.activeElement;
+      const mustScroll = (activeEl === messageInput || activeEl === usernameInput);
+
+      if (mustScroll) {
+        const gridWrapper = document.querySelector('#grid-wrapper');
+        activeEl.parentNode.scrollIntoView(false);
+        if (gridWrapper.scrollTop > 0) {
+          gridWrapper.scrollBy(0, 1);
+        }
+      }
     };
   }
 }
