@@ -6,7 +6,7 @@ const ids = {}; // one publicid, one privateid, server will send
 setUpWSMsgSending();
 setUpWSMsgReceiving();
 
-setUpMenuDropdown();
+setUpMenuToggle();
 
 setUpResponsiveLayout();
 
@@ -15,29 +15,28 @@ function setUpWSMsgSending() {
   const messageInput = document.querySelector('#message-input');
   const usernameInput = document.querySelector('#username-input');
 
-  messageInput.addEventListener('keydown', sendMsgCallback());
-  usernameInput.addEventListener('keydown', sendMsgCallback());
+  messageInput.addEventListener('keydown', sendMsgHandler);
+  usernameInput.addEventListener('keydown', sendMsgHandler);
 
   // should we allow line breaks within a message?
 
-  function sendMsgCallback() {
-    return function sendMsgHandler(event) {
-      const oldUsernameWithYou = document.querySelector('#own-user').textContent;
-      const oldUsername = oldUsernameWithYou.substring(0, oldUsernameWithYou.length - 6);
-      if (event.key === 'Enter'
-          && (messageInput.value || usernameInput.value !== oldUsername)) {
-        const outgoingMsgObj = {
-          type: 'text',
-          privateid: ids.privateid,
-          publicid: ids.publicid,
-          username: usernameInput.value,
-          time: Date.now(),
-          text: messageInput.value.trimStart()
-        };
-        ws.send(JSON.stringify(outgoingMsgObj));
-        messageInput.value = '';
-      }
-    };
+  function sendMsgHandler(event) {
+    const ownUserItem = document.querySelector('#own-user');
+    const oldUsernameWithYou = ownUserItem ? ownUserItem.textContent : ' (You)';
+    const oldUsername = oldUsernameWithYou.substring(0, oldUsernameWithYou.length - 6);
+    if (event.key === 'Enter'
+        && (messageInput.value || usernameInput.value !== oldUsername)) {
+      const outgoingMsgObj = {
+        type: 'text',
+        privateid: ids.privateid,
+        publicid: ids.publicid,
+        username: usernameInput.value,
+        time: Date.now(),
+        text: messageInput.value.trimStart()
+      };
+      ws.send(JSON.stringify(outgoingMsgObj));
+      messageInput.value = '';
+    }
   }
 }
 
@@ -145,24 +144,26 @@ function setUpWSMsgReceiving() {
   }
 }
 
-function setUpMenuDropdown() {
+function setUpMenuToggle() {
   const menuLogo = document.querySelector('#menu-logo');
   const menu = document.querySelector('#menu');
+
   menuLogo.addEventListener('click', () => {
     menu.classList.toggle('menu-in');
     menu.classList.toggle('menu-out');
   });
-  document.addEventListener('touchstart', hideMenuCallback());
-  document.addEventListener('click', hideMenuCallback());
 
-  function hideMenuCallback() {
-    return event => {
-      if (menu.classList.contains('menu-in')
-          && !menu.contains(event.target)
-          && !menuLogo.contains(event.target)) {
-        menuLogo.click();
-      }
-    };
+  // hide menu if click/touch outside of menu or menuLogo
+  // (touchstart seems to be necessary on iPhone)
+  document.addEventListener('touchstart', hideMenu);
+  document.addEventListener('click', hideMenu);
+
+  function hideMenu(event) {
+    if (menu.classList.contains('menu-in')
+        && !menu.contains(event.target)
+        && !menuLogo.contains(event.target)) {
+      menuLogo.click();
+    }
   }
 }
 
@@ -170,15 +171,11 @@ function setUpResponsiveLayout() {
 
   setRealViewportHeight();
 
-  window.addEventListener('resize', resizeCallback(setRealViewportHeight, scrollDownMessages, scrollToActiveElIfNeeded));
-
-  function resizeCallback(setRealViewportHeight, scrollDownMessages, scrollToActiveElIfNeeded) {
-    return () => {
-      setRealViewportHeight();
-      scrollDownMessages();
-      scrollToActiveElIfNeeded();
-    };
-  }
+  window.addEventListener('resize', () => {
+    setRealViewportHeight();
+    scrollToActiveElIfNeeded();
+    scrollDownMessages();
+  });
 
   function setRealViewportHeight() {
     const realViewportHeight = window.innerHeight * 0.01;
@@ -198,9 +195,9 @@ function setUpResponsiveLayout() {
 
     if (mustScroll) {
       activeEl.parentNode.scrollIntoView(false);
-      const gridWrapper = document.querySelector('#grid-wrapper');
-      if (gridWrapper.scrollTop > 0) {
-        gridWrapper.scrollBy(0, 1);
+      const contentGrid = document.querySelector('#content-grid');
+      if (contentGrid.scrollTop > 0) {
+        contentGrid.scrollBy(0, 1);
       }
     }
   }

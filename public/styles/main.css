@@ -23,7 +23,7 @@ header {
   position: relative;
 }
 
-#menu-outer-wrapper {
+#menu-flex {
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -49,7 +49,7 @@ header {
   color: white;
 }
 
-#menu-inner-wrapper {
+#menu-wrapper {
   position: relative;
 }
 
@@ -79,10 +79,6 @@ header {
 
 .menu-in {
   left: 0;
-  user-select: auto;
-  -moz-user-select: auto;
-  -webkit-user-select: auto;
-  -ms-user-select: auto;
 }
 
 h1 {
@@ -99,13 +95,13 @@ input {
   font-family: serif;
 }
 
-#grid-wrapper {
+#content-grid {
   display: grid;
   height: 100%;
   overflow: auto;
 }
 
-.inner-wrapper {
+.content-wrapper {
   background-color: white;
   border: 1px solid black;
   display: flex;
@@ -129,6 +125,18 @@ input {
   overflow: auto;
 }
 
+.other-message {
+  text-align: left;
+  padding-left: 1em;
+  color: red;
+}
+
+.own-message {
+  text-align: right;
+  padding-right: 1em;
+  color: blue;
+}
+
 .bottom-bar {
   padding: 1em 1em;
   border-top: 1px solid black;
@@ -144,18 +152,6 @@ input {
 
 span.username-prefix {
   font-weight: bold;
-}
-
-.other-message {
-  text-align: left;
-  padding-left: 1em;
-  color: red;
-}
-
-.own-message {
-  text-align: right;
-  padding-right: 1em;
-  color: blue;
 }
 
 li {
@@ -186,14 +182,38 @@ li {
 }
 
 
-/* media queries for responsive design*/
+/* MEDIA QUERIES*/
 
+/* grid layout */
+
+/* on wide window use columns */
+@media screen and (min-width: 601px) {
+  #content-grid {
+    grid-template-columns: 60% 40%;
+    grid-auto-rows: 100%;
+  }
+}
+
+/* on thin window, use rows (and shrink some elements) */
 @media screen and (max-width: 600px) {
-  #grid-wrapper {
+  #content-grid {
     grid-auto-columns: 100%;
     grid-template-rows: 55% 45%;
   }
+}
 
+/* on thin AND SHORT window (mobile portrait w/ soft keyboard up), only 1 row visible at a time */
+@media screen and (max-width: 600px) and (max-height: 500px) {
+  #content-grid {
+    grid-template-rows: 100% 100%;
+  }
+}
+
+
+/* sizing elements */
+
+/* on thin window, shrink some elements */
+@media screen and (max-width: 600px) {
   h2 {
     margin-top: .5em;
     margin-bottom: .5em;
@@ -202,9 +222,9 @@ li {
   .bottom-bar {
     padding: .5em 1em;
   }
-
 }
 
+/* on even thinner window, shrink some more elements */
 @media screen and (max-width: 400px) {
   h1 {
     font-size: 1.6em;
@@ -215,8 +235,8 @@ li {
   }
 }
 
+/* on short window, shrink some elements */
 @media screen and (max-height: 350px) {
-
   h1 {
     font-size: 1.4em;
   }
@@ -236,20 +256,7 @@ li {
   }
 }
 
-
-@media screen and (max-width: 600px) and (max-height: 500px) {
-  #grid-wrapper {
-    grid-template-rows: 100% 100%;
-  }
-}
-
-@media screen and (min-width: 601px) {
-  #grid-wrapper {
-    grid-template-columns: 60% 40%;
-    grid-auto-rows: 100%;
-  }
-}
-
+/* on VERY short window (mobile landscape w/ soft keyboard up), app must be taller than full-screen */
 @media screen and (max-height: 170px) {
   html {
     height: calc(var(--vh, 1vh) * 230);
