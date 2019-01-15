@@ -3,18 +3,15 @@ const ws = new WebSocket(HOST);
 
 const ids = {}; // one publicid, one privateid, server will send
 
-// set up websocket behavior
-setUpMsgSending();
-setUpMsgReceiving();
+setUpWSMsgSending();
+setUpWSMsgReceiving();
 
 setUpMenuDropdown();
 
 setUpResponsiveLayout();
 
 
-
-
-function setUpMsgSending() {
+function setUpWSMsgSending() {
   const messageInput = document.querySelector('#message-input');
   const usernameInput = document.querySelector('#username-input');
 
@@ -44,7 +41,7 @@ function setUpMsgSending() {
   }
 }
 
-function setUpMsgReceiving() {
+function setUpWSMsgReceiving() {
   ws.onmessage = (incomingMsgObj) => {
     console.log(incomingMsgObj);
     const msgData = JSON.parse(incomingMsgObj.data);
@@ -169,74 +166,29 @@ function setUpMenuDropdown() {
   }
 }
 
-
 function setUpResponsiveLayout() {
 
-  // initialize real viewport height CSS variable
   setRealViewportHeight();
-
-
-  // use media query to catch soft-keyboard toggles (hopefully!) and handle them specially
-
-  const softKeyboardToggleMQ = window.matchMedia('screen and (max-height: 501px)');
-  softKeyboardToggleMQ.addListener(softKeyboardToggleMQCallback(setRealViewportHeight, scrollDownMessages, scrollToActiveElIfNeeded));
-
-  function softKeyboardToggleMQCallback(setRealViewportHeight, scrollDownMessages, scrollToActiveElIfNeeded) {
-    return () => {
-      // immediately scroll down messages & reset height on soft-keyboard toggle
-      setRealViewportHeight();
-      scrollDownMessages();
-
-      // if keyboard now up, scroll to active element as needed and then blur() on submit (misses mobile Safari)
-      const softKeyboardNowUp = softKeyboardToggleMQ.matches;
-      if (softKeyboardNowUp) {
-        scrollToActiveElIfNeeded();
-        document.activeElement.addEventListener('keyup', hideSoftKeyboard);
-
-        function hideSoftKeyboard(event) {
-          if (event.key === 'Enter') {
-            this.blur();
-            this.removeEventListener('keyup', hideSoftKeyboard);
-          }
-        };
-      }
-    };
-  }
-
-
-  // if resize isn't likely to be a soft-keyboard toggle, use debouncing
 
   window.addEventListener('resize', resizeCallback(setRealViewportHeight, scrollDownMessages, scrollToActiveElIfNeeded));
 
   function resizeCallback(setRealViewportHeight, scrollDownMessages, scrollToActiveElIfNeeded) {
-    let resizeTimer;
-
     return () => {
-
-      // if it's likely mobile landscape, don't wait for debounce to adjust height
-      const resizeImmediately = window.matchMedia('screen and (min-width: 601px) and (max-height: 350px)').matches;
-      if (resizeImmediately) {
-        setRealViewportHeight();
-      }
-
-      clearTimeout(resizeTimer);
-
-      resizeTimer = setTimeout(() => {
-        scrollDownMessages();
-
-        // only resize if the soft-keyboard toggle handler didn't already take care of it
-        const realViewportHeight = window.innerHeight * 0.01;
-        const currCSSVal = document.documentElement.style.getPropertyValue('--vh');
-        if (`${realViewportHeight}px` !== currCSSVal) {
-          setRealViewportHeight();
-        }
-        scrollToActiveElIfNeeded();
-      }, 250);
+      setRealViewportHeight();
+      scrollDownMessages();
+      scrollToActiveElIfNeeded();
     };
   }
 
+  function setRealViewportHeight() {
+    const realViewportHeight = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${realViewportHeight}px`);
+  }
 
-  // responsiveness helper functions:
+  function scrollDownMessages() {
+    const messages = document.querySelector('#messages');
+    messages.scrollTop = messages.scrollHeight - messages.clientHeight;
+  }
 
   function scrollToActiveElIfNeeded() {
     const messageInput = document.querySelector('#message-input');
@@ -251,15 +203,5 @@ function setUpResponsiveLayout() {
         gridWrapper.scrollBy(0, 1);
       }
     }
-  }
-
-  function setRealViewportHeight() {
-    const realViewportHeight = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${realViewportHeight}px`);
-  }
-
-  function scrollDownMessages() {
-    const messages = document.querySelector('#messages');
-    messages.scrollTop = messages.scrollHeight - messages.clientHeight;
   }
 }
