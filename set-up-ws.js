@@ -1,7 +1,7 @@
 const uniqid = require('uniqid');
 const bcrypt = require('bcrypt');
 
-module.exports = { setUpWS };
+module.exports = setUpWS;
 
 function setUpWS(wss, WebSocket) {
   const publicUsersObj = { type: 'users', usernames: {} };
@@ -54,7 +54,7 @@ function setUpWS(wss, WebSocket) {
       if (msgObj.username !== publicUsersObj.usernames[ws.publicid]) {
         // check if username is already taken
         const publicidOfTakenUsername = Object.keys(publicUsersObj.usernames)
-            .find(key => publicUsersObj.usernames[key] === msgObj.username);
+          .find(key => publicUsersObj.usernames[key] === msgObj.username);
         // send error message if new username is already taken
         if (msgObj.username && publicidOfTakenUsername) {
           ws.send(JSON.stringify({

@@ -41,7 +41,7 @@ function setUpWSMsgSending() {
 }
 
 function setUpWSMsgReceiving() {
-  ws.onmessage = (incomingMsgObj) => {
+  ws.onmessage = incomingMsgObj => {
     console.log(incomingMsgObj);
     const msgData = JSON.parse(incomingMsgObj.data);
 
@@ -62,7 +62,7 @@ function setUpWSMsgReceiving() {
     }
 
     function communicateError() {
-      if (msgData.error = 'takenUsername') {
+      if (msgData.error === 'takenUsername') {
         const usernameLabel = document.querySelector('#username-label');
 
         const usernameItemsArr = Array.from(document.querySelectorAll('li'));
@@ -74,12 +74,12 @@ function setUpWSMsgReceiving() {
 
         usernameLabel.classList.add('bad-username');
         takenUsernameItem.classList.add('taken-username');
+      }
 
-        function removeClass(classToRemove) {
-          return function() {
-            this.classList.remove(classToRemove);
-          };
-        }
+      function removeClass(classToRemove) {
+        return function() {
+          this.classList.remove(classToRemove);
+        };
       }
     }
 
@@ -141,7 +141,7 @@ function setUpWSMsgReceiving() {
         }
       }
     }
-  }
+  };
 }
 
 function setUpMenuToggle() {
@@ -168,37 +168,28 @@ function setUpMenuToggle() {
 }
 
 function setUpResponsiveLayout() {
-
-  setRealViewportHeight();
+  setRealVH();
 
   window.addEventListener('resize', () => {
-    setRealViewportHeight();
-    scrollToActiveElIfNeeded();
+    setRealVH();
+    scrollToContentWrapperIfNeeded();
     scrollDownMessages();
   });
 
-  function setRealViewportHeight() {
-    const realViewportHeight = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${realViewportHeight}px`);
+  function setRealVH() {
+    const realVH = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${realVH}px`);
+  }
+
+  function scrollToContentWrapperIfNeeded() {
+    const activeEl = document.activeElement;
+    if (activeEl.classList.contains('content-input')) {
+      activeEl.parentNode.parentNode.scrollIntoView(false);
+    }
   }
 
   function scrollDownMessages() {
     const messages = document.querySelector('#messages');
     messages.scrollTop = messages.scrollHeight - messages.clientHeight;
-  }
-
-  function scrollToActiveElIfNeeded() {
-    const messageInput = document.querySelector('#message-input');
-    const usernameInput = document.querySelector('#username-input');
-    const activeEl = document.activeElement;
-    const mustScroll = (activeEl === messageInput || activeEl === usernameInput);
-
-    if (mustScroll) {
-      activeEl.parentNode.scrollIntoView(false);
-      const contentGrid = document.querySelector('#content-grid');
-      if (contentGrid.scrollTop > 0) {
-        contentGrid.scrollBy(0, 1);
-      }
-    }
   }
 }

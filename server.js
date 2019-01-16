@@ -1,7 +1,7 @@
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
-const setUpWS = require('./ws-handling.js').setUpWS;
+const setUpWS = require('./set-up-ws.js');
 
 const app = express();
 app.use(express.static('public'));
