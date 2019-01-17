@@ -2,9 +2,9 @@ const HOST = location.origin.replace(/^http/, 'ws');
 const ws = new WebSocket(HOST);
 
 // because of Heroku 55-second timeout:
-ws.onclose = event => {
-  alert('Server idles after 1 minute of inactivity. Refresh page to reconnect.');
-}
+// ws.onclose = event => {
+//   alert('Server idles after 1 minute of inactivity. Refresh page to reconnect.');
+// }
 
 
 const ids = {}; // one publicid, one privateid, server will send
