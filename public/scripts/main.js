@@ -16,6 +16,7 @@ setUpMenuToggle();
 
 setUpResponsiveLayout();
 
+setUpDarkModeToggle();
 
 function setUpWSMsgSending() {
   const messageInput = document.querySelector('#message-input');
@@ -198,4 +199,11 @@ function setUpResponsiveLayout() {
     const messages = document.querySelector('#messages');
     messages.scrollTop = messages.scrollHeight - messages.clientHeight;
   }
+}
+
+function setUpDarkModeToggle() {
+  const darkModeToggler = document.querySelector('#dark-mode-toggler');
+  darkModeToggler.addEventListener('click', () => {
+    document.querySelector('html').classList.toggle('dark-mode');
+  });
 }

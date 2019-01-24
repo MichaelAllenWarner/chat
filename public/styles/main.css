@@ -10,6 +10,7 @@ html {
 
 body {
   background-color: lightblue;
+  color: black;
   font-size: 16px;
   text-align: center;
   font-family: serif;
@@ -17,6 +18,8 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
+  transition: all .2s;
+  transition-property: background-color, color;
 }
 
 header {
@@ -31,9 +34,7 @@ header {
 }
 
 #menu-logo {
-  padding-left: 2px;
-  padding-right: 2px;
-  margin: auto 0 auto .4em;
+  margin: auto 0 auto .2em;
   color: black;
   font-size: 2.5em;
   font-weight: bold;
@@ -55,7 +56,6 @@ header {
 
 #menu {
   position: absolute;
-  background-color: lightgray;
   width: 300px;
   opacity: .9;
   text-align: left;
@@ -63,10 +63,24 @@ header {
 }
 
 .menu-item {
+  background-color: lightgray;
+  color: black;
   font-size: 1.5em;
+  padding-left: .25em;
   border-top: 1px solid black;
   border-left: 1px solid black;
   box-shadow: 1px 1px 1px black;
+  cursor: pointer;
+  transition: all .2s;
+  transition-property: color, background-color, border-color, box-shadow;
+}
+
+.menu-item:hover {
+  background-color: tan;
+}
+
+.menu-item:active {
+  color: white;
 }
 
 .menu-out {
@@ -93,6 +107,10 @@ h2 {
 input {
   font-size: 16px;
   font-family: serif;
+  background-color: white;
+  color: black;
+  transition: all .2s;
+  transition-property: background-color, color;
 }
 
 #content-grid {
@@ -106,6 +124,8 @@ input {
   border: 1px solid black;
   display: flex;
   flex-direction: column;
+  transition: all .2s;
+  transition-property: background-color, border-color;
 }
 
 .viewer {
@@ -114,6 +134,8 @@ input {
   height: 100%;
   background-color: linen;
   border-top: 1px solid black;
+  transition: all .2s;
+  transition-property: background-color, border-color;
 }
 
 #messages-viewer {
@@ -129,17 +151,20 @@ input {
   text-align: left;
   padding-left: 1em;
   color: red;
+  transition: color .2s;
 }
 
 .own-message {
   text-align: right;
   padding-right: 1em;
   color: blue;
+  transition: color .2s;
 }
 
 .bottom-bar {
   padding: 1em 1em;
   border-top: 1px solid black;
+  transition: border-color .2s;
 }
 
 #message-input {
@@ -157,10 +182,12 @@ span.username-prefix {
 li {
   text-align: left;
   color: red;
+  transition: color .2s;
 }
 
 #own-user {
   color: blue;
+  transition: color .2s;
 }
 
 @keyframes bad-username-animation {
@@ -180,6 +207,96 @@ li {
 .taken-username {
   animation: .2s 4 alternate taken-username-animation;
 }
+
+
+
+/* DARK MODE COLORS */
+
+.dark-mode body {
+  background-color: #1e2327;
+  color: white;
+}
+
+.dark-mode #menu-logo {
+  color: white;
+}
+
+.dark-mode #menu-logo:hover {
+  color: gold;
+}
+
+.dark-mode #menu-logo:active {
+  color: lightgray;
+}
+
+.dark-mode .menu-item {
+  color: white;
+  background-color: black;
+  border-color: lightgray;
+  box-shadow: 1px 1px 1px lightgray;
+}
+
+.dark-mode .menu-item:hover {
+  background-color: slategray;
+}
+
+.dark-mode .menu-item:active {
+  color: gold;
+}
+
+.dark-mode input {
+  background-color: #505a63;
+  color: white;
+}
+
+.dark-mode .content-wrapper {
+  background-color: #2f3439;
+  border-color: lightgray;
+}
+
+.dark-mode .viewer {
+  background-color: #505a63;
+  border-color: lightgray;
+}
+
+.dark-mode .other-message {
+  color: gold;
+}
+
+.dark-mode .own-message {
+  color: white;
+}
+
+.dark-mode .bottom-bar {
+  border-color: lightgray;
+}
+
+.dark-mode li {
+  color: gold;
+}
+
+.dark-mode #own-user {
+  color: white;
+}
+
+@keyframes dark-mode-bad-username-animation {
+  from {color: white;}
+  to {color: gold;}
+}
+
+@keyframes dark-mode-taken-username-animation {
+  from {color: gold;}
+  to {color: white;}
+}
+
+.dark-mode .bad-username {
+  animation: .2s 4 alternate dark-mode-bad-username-animation;
+}
+
+.dark-mode .taken-username {
+  animation: .2s 4 alternate dark-mode-taken-username-animation;
+}
+
 
 
 /* MEDIA QUERIES*/
