@@ -26,6 +26,7 @@ function setUpWSMsgSending() {
   usernameInput.addEventListener('keydown', sendMsgHandler);
 
   // should we allow line breaks within a message?
+  // If so, will have to change input to textarea, it seems
 
   function sendMsgHandler(event) {
     const ownUserItem = document.querySelector('#own-user');
@@ -49,7 +50,7 @@ function setUpWSMsgSending() {
 
 function setUpWSMsgReceiving() {
   ws.onmessage = incomingMsgObj => {
-    console.log(incomingMsgObj);
+    // console.log(incomingMsgObj);
     const msgData = JSON.parse(incomingMsgObj.data);
 
     switch (msgData.type) {
