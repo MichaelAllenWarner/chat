@@ -59,23 +59,23 @@ function setUpWSMsgReceiving() {
         ids.privateid = msgData.yourPrivateid;
         break;
       case 'error':
-        communicateError();
+        handleError(msgData.errorType, msgData.errorData);
         break;
       case 'users':
-        updateUsernamesList(msgData.usernames, ids.publicid);
+        updateUsernamesList(msgData.usernames);
         break;
       case 'text':
-        processNewTextMsg(ids.publicid);
+        processNewTextMsg();
         break;
     }
 
-    function communicateError() {
-      if (msgData.error === 'takenUsername') {
+    function handleError(errorType, errorData) {
+      if (errorType === 'takenUsername') {
         const usernameLabel = document.querySelector('#username-label');
 
         const usernameItemsArr = Array.from(document.querySelectorAll('li'));
         const takenUsernameItem = usernameItemsArr.find(usernameItem =>
-          usernameItem.getAttribute('data-publicid') === msgData.publicidOfTakenUsername);
+          usernameItem.getAttribute('data-publicid') === errorData.publicidOfTakenUsername);
 
         usernameLabel.addEventListener('animationend', removeClass('bad-username'), { once: true });
         takenUsernameItem.addEventListener('animationend', removeClass('taken-username'), { once: true });
@@ -84,14 +84,14 @@ function setUpWSMsgReceiving() {
         takenUsernameItem.classList.add('taken-username');
       }
 
-      function removeClass(classToRemove) {
+      function removeClass(className) {
         return function() {
-          this.classList.remove(classToRemove);
+          this.classList.remove(className);
         };
       }
     }
 
-    function updateUsernamesList(usernamesObj, ownPublicid) {
+    function updateUsernamesList(usernamesObj) {
       const usernamesList = document.querySelector('#usernames-list');
       while (usernamesList.firstChild) {
         usernamesList.removeChild(usernamesList.firstChild);
@@ -99,11 +99,11 @@ function setUpWSMsgReceiving() {
 
       const ownUserItem = document.createElement('li');
       ownUserItem.id = 'own-user';
-      ownUserItem.setAttribute('data-publicid', ownPublicid);
+      ownUserItem.setAttribute('data-publicid', ids.publicid);
       usernamesList.appendChild(ownUserItem);
 
       for (const [publicid, username] of Object.entries(usernamesObj)) {
-        if (publicid === ownPublicid) {
+        if (publicid === ids.publicid) {
           ownUserItem.textContent = (username) ? `${username} (You)` : 'An anonymous user (You)';
         } else {
           const usernameItem = document.createElement('li');
@@ -114,7 +114,7 @@ function setUpWSMsgReceiving() {
       }
     }
 
-    function processNewTextMsg(ownPublicid) {
+    function processNewTextMsg() {
       const text = msgData.text.trimStart();
       if (text) {
         const publicid = msgData.publicid;
@@ -122,8 +122,8 @@ function setUpWSMsgReceiving() {
         const time = new Date(msgData.time);
 
         const newMsg = document.createElement('p');
-        const msgClass = (publicid === ownPublicid) ? 'own-message' : 'other-message';
-        newMsg.classList.add(msgClass);
+        const className = (publicid === ids.publicid) ? 'own-message' : 'other-message';
+        newMsg.classList.add(className);
         newMsg.setAttribute('data-time', time);
 
         const usernamePrefix = document.createElement('span');
