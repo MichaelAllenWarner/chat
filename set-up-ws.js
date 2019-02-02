@@ -30,8 +30,10 @@ function setUpWS(wss, WebSocket) {
     // tell client own ids
     ws.send(JSON.stringify({
       type: 'ids',
-      yourPublicid: ws.publicid,
-      yourPrivateid: ws.privateid
+      ids: {
+        publicid: ws.publicid,
+        privateid: ws.privateid
+      }
     }));
 
     // update and broadcast usernames (empty string for new client)
@@ -50,15 +52,15 @@ function setUpWS(wss, WebSocket) {
       // verify integrity of msgObj, send error message if there's a problem
       if (typeof msgObj !== 'object'
           || 'type' in msgObj === false
+          || 'text' in msgObj === false
+          || 'time' in msgObj === false
           || 'privateid' in msgObj === false
           || 'publicid' in msgObj === false
           || 'username' in msgObj === false
-          || 'time' in msgObj === false
-          || 'text' in msgObj === false
           || msgObj.type !== 'text'
+          || typeof msgObj.text !== 'string'
           || msgObj.privateid !== ws.privateid
-          || msgObj.publicid !== ws.publicid
-          || typeof msgObj.text !== 'string') {
+          || msgObj.publicid !== ws.publicid) {
         ws.send(JSON.stringify({
           type: 'error',
           errorType: 'badObject',
@@ -88,9 +90,12 @@ function setUpWS(wss, WebSocket) {
         broadcastUsernames();
       }
 
-      // broadcast message without privateid
-      delete msgObj.privateid;
-      wss.broadcast(JSON.stringify(msgObj));
+      // if msgObj.text isn't blank, broadcast msgObj without privateid
+      const trimmedText = msgObj.text.trimStart();
+      if (trimmedText) {
+        delete msgObj.privateid;
+        wss.broadcast(JSON.stringify(msgObj));
+      }
     });
 
     ws.on('close', () => {
