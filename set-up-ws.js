@@ -80,7 +80,7 @@ function setUpWS(wss, WebSocket) {
         if (msgObj.username) {
           const publicids = Object.keys(usernames);
           const publicidOfTakenUsername = publicids.find(id => usernames[id] === msgObj.username);
-          if (msgObj.publicidOfTakenUsername) {
+          if (publicidOfTakenUsername) {
             ws.send(JSON.stringify({
               type: 'error',
               errorType: 'takenUsername',
