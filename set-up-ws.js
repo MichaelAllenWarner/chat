@@ -70,29 +70,34 @@ function setUpWS(wss, WebSocket) {
         return;
       }
 
+      // no whitespace allowed at start or end of username
+      msgObj.username = msgObj.username.trim();
+
       // check for attempted change of username
       if (msgObj.username !== usernames[ws.publicid]) {
 
-        // send error message if desired new username is already taken
-        const publicidOfTakenUsername = Object.keys(usernames)
-          .find(key => usernames[key] === msgObj.username);
-        if (msgObj.username && publicidOfTakenUsername) {
-          ws.send(JSON.stringify({
-            type: 'error',
-            errorType: 'takenUsername',
-            errorData: { publicidOfTakenUsername }
-          }));
-          return;
+        // send error message if desired new (non-empty) username is already taken
+        if (msgObj.username) {
+          const publicids = Object.keys(usernames);
+          const publicidOfTakenUsername = publicids.find(id => usernames[id] === msgObj.username);
+          if (msgObj.publicidOfTakenUsername) {
+            ws.send(JSON.stringify({
+              type: 'error',
+              errorType: 'takenUsername',
+              errorData: { publicidOfTakenUsername }
+            }));
+            return;
+          }
         }
 
-        // update and broadcast usernames
+        // update and broadcast usernames if new username is available (or is empty string)
         usernames[ws.publicid] = msgObj.username;
         broadcastUsernames();
       }
 
-      // if msgObj.text isn't blank, broadcast msgObj without privateid
-      const trimmedText = msgObj.text.trimStart();
-      if (trimmedText) {
+      // if msgObj.text isn't blank, broadcast msgObj (without privateid)
+      const thereIsText = msgObj.text.trimStart() ? true : false;
+      if (thereIsText) {
         delete msgObj.privateid;
         wss.broadcast(JSON.stringify(msgObj));
       }
