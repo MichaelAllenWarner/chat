@@ -315,7 +315,7 @@ li {
   }
 }
 
-/* on thin window, use rows (and shrink some elements) */
+/* on thin window, use rows */
 @media screen and (max-width: 600px) {
   #content-grid {
     grid-auto-columns: 100%;
