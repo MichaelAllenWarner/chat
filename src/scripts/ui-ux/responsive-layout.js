@@ -1,4 +1,4 @@
-export default function setUpResponsiveLayout() {
+export default () => {
   setRealVH();
 
   window.addEventListener('resize', () => {
@@ -23,4 +23,4 @@ export default function setUpResponsiveLayout() {
     const messages = document.querySelector('#messages');
     messages.scrollTop = messages.scrollHeight - messages.clientHeight;
   }
-}
+};

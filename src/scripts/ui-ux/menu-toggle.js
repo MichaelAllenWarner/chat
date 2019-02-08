@@ -1,4 +1,4 @@
-export default function setUpMenuToggle() {
+export default () => {
   const menuLogo = document.querySelector('#menu-logo');
   const menu = document.querySelector('#menu');
 
@@ -19,4 +19,4 @@ export default function setUpMenuToggle() {
       menuLogo.click();
     }
   }
-}
+};

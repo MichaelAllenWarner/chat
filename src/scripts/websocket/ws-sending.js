@@ -1,11 +1,11 @@
-export default function setUpWSSending(ids, ws) {
+export default (ids, ws) => {
   const messageInput = document.querySelector('#message-input');
   const usernameInput = document.querySelector('#username-input');
 
-  messageInput.addEventListener('keydown', sendMsgHandler);
-  usernameInput.addEventListener('keydown', sendMsgHandler);
+  messageInput.addEventListener('keydown', handleKeydown);
+  usernameInput.addEventListener('keydown', handleKeydown);
 
-  function sendMsgHandler(event) {
+  function handleKeydown(event) {
     if (event.key === 'Enter') {
       const ownUserItem = document.querySelector('#own-user');
       const ownUserItemText = ownUserItem.textContent;
@@ -36,4 +36,4 @@ export default function setUpWSSending(ids, ws) {
       }
     }
   }
-}
+};
