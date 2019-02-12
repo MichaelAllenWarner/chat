@@ -20,7 +20,7 @@ module.exports = [
                   useBuiltIns: 'usage',
                   debug: true,
                   targets: {
-                    browsers: ['> 1%']
+                    browsers: ['IE >= 10']
                   }
                 }]
               ]

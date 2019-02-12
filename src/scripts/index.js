@@ -1,16 +1,17 @@
-import { ids } from './ids';
-import { ws } from './websocket/ws-connect';
 import setUpWSSending from './websocket/ws-sending';
 import setUpWSReceiving from './websocket/ws-receiving';
 import setUpResponsiveLayout from './ui-ux/responsive-layout';
 import setUpMenuToggle from './ui-ux/menu-toggle';
 import setUpDarkModeToggle from './ui-ux/dark-mode-toggle';
 
-// WebSocket
+const ids = { publicid: undefined, privateid: undefined };
+
+const HOST = location.origin.replace(/^http/, 'ws');
+const ws = new WebSocket(HOST);
+
 setUpWSSending(ids, ws);
 setUpWSReceiving(ids, ws);
 
-// UI/UX
 setUpResponsiveLayout();
 setUpMenuToggle();
 setUpDarkModeToggle();

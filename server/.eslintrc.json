@@ -1,6 +1,5 @@
 {
     "env": {
-        "browser": true,
         "es6": true,
         "node": true
     },
@@ -26,6 +25,7 @@
         "semi": [
             "error",
             "always"
-        ]
+        ],
+        "no-console": "off"
     }
 }

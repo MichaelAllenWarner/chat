@@ -1,6 +1,6 @@
 # Mike's Chat App
 
-This single-page web app is [hosted on Heroku](https://mikes-chat-app.herokuapp.com). It's my second Node/Express project, and it's written in vanilla Javascript (ES6), HTML, and CSS. It uses WebSockets to transmit messages between server and client.
+This single-page web app is [hosted on Heroku](https://mikes-chat-app.herokuapp.com). It's my second Node/Express project, and it's written in vanilla Javascript (ES6+), HTML, and CSS. It uses WebSockets to transmit messages between server and client.
 
 Unlike my previous projects, this one's biggest challenge was UI/UX. Setting up the basic chat functionality took only a few hours, but getting the app to look right across browsers on a variety of devices took several days. The main difficulty was maintaining a full-viewport layout *except* when the viewport height is too small for the whole app to fit. Specifically: on most mobile browsers, the viewport height shrinks when the virtual keyboard is deployed, which happens every time the user taps an input box. I needed to gracefully ditch the full-viewport layout in that case, while also keeping the viewport centered on the area that the user tapped.
 

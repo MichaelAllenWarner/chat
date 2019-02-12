@@ -1,9 +1,13 @@
 const uniqid = require('uniqid');
 const bcrypt = require('bcrypt');
+const validateMsg = require('./validate-msg.js');
+const sendError = require('./send-error.js');
 
 module.exports = setUpWS;
 
 function setUpWS(wss, WebSocket) {
+
+  const usernames = {};
 
   wss.broadcast = data => {
     wss.clients.forEach(client => {
@@ -13,8 +17,6 @@ function setUpWS(wss, WebSocket) {
     });
   };
 
-  const usernames = {};
-
   const broadcastUsernames = () => {
     wss.broadcast(JSON.stringify({
       type: 'users',
@@ -23,6 +25,7 @@ function setUpWS(wss, WebSocket) {
   };
 
   wss.on('connection', ws => {
+
     // assign ids to client
     ws.publicid = uniqid();
     ws.privateid = bcrypt.hashSync(uniqid(), 0);
@@ -49,23 +52,10 @@ function setUpWS(wss, WebSocket) {
       console.log('received msg from client with publicid ' + ws.publicid);
       console.log(msgObj);
 
-      // verify integrity of msgObj, send error message if there's a problem
-      if (typeof msgObj !== 'object'
-          || 'type' in msgObj === false
-          || 'text' in msgObj === false
-          || 'time' in msgObj === false
-          || 'privateid' in msgObj === false
-          || 'publicid' in msgObj === false
-          || 'username' in msgObj === false
-          || msgObj.type !== 'text'
-          || typeof msgObj.text !== 'string'
-          || msgObj.privateid !== ws.privateid
-          || msgObj.publicid !== ws.publicid) {
-        ws.send(JSON.stringify({
-          type: 'error',
-          errorType: 'badObject',
-          errorData: {}
-        }));
+      // validate msgObj, send error message if there's a problem
+      const msgObjIsValid = validateMsg(msgObj, ws);
+      if (!msgObjIsValid) {
+        sendError(ws, 'badObject', {});
         console.log('Error: Message from client has wrong schema');
         return;
       }
@@ -81,11 +71,7 @@ function setUpWS(wss, WebSocket) {
           const publicids = Object.keys(usernames);
           const publicidOfTakenUsername = publicids.find(id => usernames[id] === msgObj.username);
           if (publicidOfTakenUsername) {
-            ws.send(JSON.stringify({
-              type: 'error',
-              errorType: 'takenUsername',
-              errorData: { publicidOfTakenUsername }
-            }));
+            sendError(ws, 'takenUsername', { publicidOfTakenUsername });
             return;
           }
         }
