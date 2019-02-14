@@ -26,6 +26,7 @@ body {
 
 header {
   position: relative;
+  -ms-flex-order: 1;
 }
 
 #menu-flex {
@@ -124,6 +125,7 @@ input {
   display: grid;
   height: 100%;
   overflow: auto;
+  -ms-flex-order: 2;
 }
 
 .content-wrapper {
@@ -145,6 +147,10 @@ input {
   border-top: 1px solid black;
   transition: all .2s;
   transition-property: background-color, border-color;
+}
+
+#messages-wrapper {
+  -ms-flex-order: 1;
 }
 
 #messages-viewer {
@@ -182,6 +188,10 @@ input {
 
 #message-input {
   width: 60%;
+}
+
+#users-wrapper {
+  -ms-flex-order: 2;
 }
 
 #username-input {
