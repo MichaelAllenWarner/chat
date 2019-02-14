@@ -18,7 +18,7 @@ export default (ids, ws) => {
         && !(!username && oldUsername === 'An anonymous user');
 
       const text = messageInput.value;
-      const thereIsText = text.trimStart() ? true : false;
+      const thereIsText = text.trimLeft() ? true : false;
 
       if (usernameIsNew || thereIsText) {
         ws.send(JSON.stringify({
