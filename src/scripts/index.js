@@ -6,6 +6,17 @@ import setUpDarkModeToggle from './ui-ux/dark-mode-toggle';
 
 const ids = { publicid: undefined, privateid: undefined };
 
+// for Internet Explorer
+if (!window.location.origin) {
+  window.location.origin =
+    window.location.protocol
+    + "//"
+    + window.location.hostname
+    + (window.location.port
+      ? ':' + window.location.port
+      : '');
+}
+
 const HOST = location.origin.replace(/^http/, 'ws');
 const ws = new WebSocket(HOST);
 
