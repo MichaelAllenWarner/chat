@@ -21,3 +21,5 @@ Finally I took a step back and tried something much simpler: I removed all CSS t
 Lesson learned: keep things simple.
 
 Creating this app was something of a crash course in modern CSS. When I dabbled in web design several years ago, there were no grids or flexboxes. In this project I used both to good effect. For example, on a narrow-and-short viewport, the grid becomes scrollable, but the header at the top of the page stays put as if its position property were set to "fixed." In fact, its position is *not* fixed, and it stays put because its parent element is a flexbox with 100% height.
+
+I managed to get the app working on Internet Explorer 10, but there are still issues with the CSS.

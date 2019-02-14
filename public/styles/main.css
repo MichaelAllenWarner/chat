@@ -26,7 +26,6 @@ body {
 
 header {
   position: relative;
-  -ms-flex-order: 1;
 }
 
 #menu-flex {
@@ -125,7 +124,6 @@ input {
   display: grid;
   height: 100%;
   overflow: auto;
-  -ms-flex-order: 2;
 }
 
 .content-wrapper {
@@ -147,10 +145,6 @@ input {
   border-top: 1px solid black;
   transition: all .2s;
   transition-property: background-color, border-color;
-}
-
-#messages-wrapper {
-  -ms-flex-order: 1;
 }
 
 #messages-viewer {
@@ -188,10 +182,6 @@ input {
 
 #message-input {
   width: 60%;
-}
-
-#users-wrapper {
-  -ms-flex-order: 2;
 }
 
 #username-input {
@@ -333,6 +323,14 @@ li {
     grid-auto-rows: 100%;
     -ms-grid-columns: 60% 40%;
   }
+
+  #messages-wrapper {
+    -ms-grid-column: 1;
+  }
+
+  #users-wrapper {
+    -ms-grid-column: 2;
+  }
 }
 
 /* on thin window, use rows */
@@ -341,6 +339,14 @@ li {
     grid-auto-columns: 100%;
     grid-template-rows: 55% 45%;
     -ms-grid-columns: 100%;
+  }
+
+  #messages-wrapper {
+    -ms-grid-row: 1;
+  }
+
+  #users-wrapper {
+    -ms-grid-row: 2;
   }
 }
 
