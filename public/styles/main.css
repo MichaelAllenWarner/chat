@@ -16,7 +16,9 @@ body {
   font-family: serif;
   margin: 0;
   height: 100%;
+  display: -ms-flex;
   display: flex;
+  -ms-flex-direction: column;
   flex-direction: column;
   transition: all .2s;
   transition-property: background-color, color;
@@ -27,7 +29,9 @@ header {
 }
 
 #menu-flex {
+  display: -ms-flex;
   display: flex;
+  -ms-flex-direction: column;
   flex-direction: column;
   position: absolute;
   height: 100%;
@@ -116,8 +120,8 @@ input {
 }
 
 #content-grid {
-  display: grid;
   display: -ms-grid;
+  display: grid;
   height: 100%;
   overflow: auto;
 }
@@ -125,7 +129,9 @@ input {
 .content-wrapper {
   background-color: white;
   border: 1px solid black;
+  display: -ms-flex;
   display: flex;
+  -ms-flex-direction: column;
   flex-direction: column;
   transition: all .2s;
   transition-property: background-color, border-color;
@@ -142,7 +148,9 @@ input {
 }
 
 #messages-viewer {
+  display: -ms-flex;
   display: flex;
+  -ms-flex-direction: column-reverse;
   flex-direction: column-reverse;
 }
 
