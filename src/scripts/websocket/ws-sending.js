@@ -1,3 +1,6 @@
+// because babel-loader isn't catching this polyfill:
+require ('core-js/fn/string/trim-left');
+
 export default (ids, ws) => {
   const messageInput = document.querySelector('#message-input');
   const usernameInput = document.querySelector('#username-input');
