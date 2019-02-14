@@ -117,6 +117,7 @@ input {
 
 #content-grid {
   display: grid;
+  display: -ms-grid;
   height: 100%;
   overflow: auto;
 }
