@@ -1,6 +1,3 @@
-// because babel-loader isn't catching this polyfill:
-require ('core-js/fn/string/trim-left');
-
 export default (ids, ws) => {
   const messageInput = document.querySelector('#message-input');
   const usernameInput = document.querySelector('#username-input');
@@ -21,7 +18,7 @@ export default (ids, ws) => {
         && !(!username && oldUsername === 'An anonymous user');
 
       const text = messageInput.value;
-      const thereIsText = text.trimLeft() ? true : false;
+      const thereIsText = text.trim() ? true : false;
 
       if (usernameIsNew || thereIsText) {
         ws.send(JSON.stringify({
