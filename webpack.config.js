@@ -2,10 +2,10 @@ const path = require('path');
 
 module.exports = [
   {
-    entry: './src/scripts/index.js',
+    entry: './src/index.js',
     output: {
       filename: 'es5-main.js',
-      path: path.resolve(__dirname, 'public/scripts')
+      path: path.resolve(__dirname, 'public/js')
     },
     module: {
       rules: [
@@ -31,10 +31,10 @@ module.exports = [
     }
   },
   {
-    entry: './src/scripts/index.js',
+    entry: './src/index.js',
     output: {
       filename: 'main.js',
-      path: path.resolve(__dirname, 'public/scripts')
+      path: path.resolve(__dirname, 'public/js')
     },
     module: {
       rules: [
