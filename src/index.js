@@ -21,11 +21,15 @@ const HOST = location.origin.replace(/^http/, 'ws');
 const ws = new WebSocket(HOST);
 
 // because of Heroku 55-second timeout:
+const herokuTimeoutAlert = () => {
+  alert('You\'ve been disconnected from Mike\'s Chat App!\n'
+  + '(Heroku does this after 55 seconds of server inactivity.)\n'
+  + 'Please refresh the page to reconnect.');
+};
+
 if (window.location.hostname.includes('heroku')) {
   ws.onclose = () => {
-    alert('You\'ve been disconnected.\n'
-     + 'This is probably because Heroku (the hosting service) makes the server idle after 1 minute of inactivity.\n'
-     + 'Please refresh the page to reconnect.');
+    setTimeout(herokuTimeoutAlert, 1000);    
   };
 }
 
