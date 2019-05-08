@@ -220,7 +220,7 @@ export class App extends Component {
     };
 
 
-    //SET UP DISCONNECTION ALERT FOR HEROKU (55-SECOND TIMEOUT):
+    // SET UP DISCONNECTION ALERT FOR HEROKU (55-SECOND TIMEOUT):
     const herokuTimeoutAlert = () => {
       window.alert('You\'ve been disconnected from Mike\'s Chat App!\n'
       + '(Heroku does this after 55 seconds of server inactivity.)\n'
