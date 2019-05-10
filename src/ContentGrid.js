@@ -10,21 +10,15 @@ class ContentGrid extends Component {
   };
 
   clearMessageInput = () => {
-    this.setState({
-      messageInput: ''
-    });
+    this.setState({ messageInput: '' });
   };
 
   updateMessageInput = input => {
-    this.setState({
-      messageInput: input
-    });
+    this.setState({ messageInput: input });
   };
 
   updateUsername = input => {
-    this.setState({
-      usernameInput: input
-    });
+    this.setState({ usernameInput: input });
   };
 
   sendMessage = () => {
@@ -40,12 +34,21 @@ class ContentGrid extends Component {
   };
 
   handleKeyDown = event => {
-    if (event.key === 'Enter') {
-      const usernameIsNew = (this.props.username !== this.state.usernameInput.trim());
-      const thereIsText = this.state.messageInput.trim() ? true : false;
+    if (event.key !== 'Enter') {
+      return;
+    }
 
-      if (usernameIsNew || thereIsText) {
-        this.sendMessage();
+    const thereIsText = !!this.state.messageInput.trim();
+    const usernameIsNew = (this.props.username !== this.state.usernameInput.trim());
+
+    const usernameIsTaken = this.props.usernames.some(usernameItem =>
+      usernameItem.props.children === this.state.usernameInput.trim()
+      && usernameItem.key !== this.props.ids.publicid
+    );
+
+    if (thereIsText || usernameIsNew) {
+      this.sendMessage();
+      if (!usernameIsTaken) {
         this.clearMessageInput();
       }
     }
