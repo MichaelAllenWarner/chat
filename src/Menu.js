@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { menuToggler, menuOutIfIn } from './Header-helpers';
+import { menuToggler, menuOutIfIn } from './Menu-helpers';
 
-class Header extends Component {
+class Menu extends Component {
   state = {
     menuClass: 'menu-out' // toggles between 'menu-out' and 'menu-in'
   };
@@ -35,36 +35,33 @@ class Header extends Component {
     const verticalEllipsis = String.fromCharCode(0x22EE);
 
     return (
-      <header>
-        <div id="menu-flex">
-          <span
-            id="menu-logo"
-            ref={this.menuLogoRef}
-            onClick={this.toggleMenu}
+      <div id="menu-flex">
+        <span
+          id="menu-logo"
+          ref={this.menuLogoRef}
+          onClick={this.toggleMenu}
+        >
+          &nbsp;{verticalEllipsis}&nbsp;
+        </span>
+        <div id="menu-wrapper">
+          <div
+            id="menu"
+            ref={this.menuRef}
+            className={this.state.menuClass}
           >
-            &nbsp;{verticalEllipsis}&nbsp;
-          </span>
-          <div id="menu-wrapper">
             <div
-              id="menu"
-              ref={this.menuRef}
-              className={this.state.menuClass}
+              className="menu-item"
+              onClick={this.toggleDarkMode}
             >
-              <div
-                className="menu-item"
-                onClick={this.toggleDarkMode}
-              >
-                Toggle dark mode
-              </div>
-              <div className="menu-item">Sample menu item</div>
-              <div className="menu-item">Another sample item</div>
+              Toggle dark mode
             </div>
+            <div className="menu-item">Sample menu item</div>
+            <div className="menu-item">Another sample item</div>
           </div>
         </div>
-        <h1>Mike’s Chat App</h1>
-      </header>
+      </div>
     );
   }
 }
 
-export { Header };
+export { Menu };

@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  setRealVH,
-  scrollToContentWrapperIfNeeded
-} from './Chat-helpers';
+import { setRealVH, scrollToContentWrapperIfNeeded } from './Chat-helpers';
 
 class Chat extends Component {
   messagesRef = React.createRef();
@@ -21,8 +18,7 @@ class Chat extends Component {
       messages.scrollTop = messages.scrollHeight - messages.clientHeight;
     } else {
       messages.scrollTop = scrTop;
-      // messages.scrollTop = messages.scrollHeight - (scrHgt - scrTop);
-      // when message is ADDED, we instead use `messages.scrollTop = scrTop;`
+      // or: messages.scrollTop = messages.scrollHeight - (scrHgt - scrTop);
     }
   };
 
