@@ -1,32 +1,54 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { menuToggler, menuOutIfIn } from './Header-helpers';
 
 class Header extends Component {
+  state = {
+    menuClass: 'menu-out' // toggles between 'menu-out' and 'menu-in'
+  };
+
+  menuRef = React.createRef();
+  menuLogoRef = React.createRef();
+
+  toggleMenu = () => {
+    this.setState(menuToggler);
+  };
+
+  handleClickOrTouchStart = event => { // seems mobile Safari needs touchStart
+    if (
+      !this.menuRef.current.contains(event.target)
+      && !this.menuLogoRef.current.contains(event.target)
+    ) {
+      this.setState(menuOutIfIn);
+    }
+  };
+
   toggleDarkMode = () => { // modify <html> tag directly
     document.querySelector('html').classList.toggle('dark-mode');
   };
+
+  componentDidMount() {
+    document.addEventListener('click', this.handleClickOrTouchStart);
+    document.addEventListener('touchstart', this.handleClickOrTouchStart);
+  }
 
   render() {
     const verticalEllipsis = String.fromCharCode(0x22EE);
 
     return (
-      <header
-        onClick={this.props.handleClickOrTouchStart}
-        onTouchStart={this.props.handleClickOrTouchStart}
-      >
+      <header>
         <div id="menu-flex">
           <span
             id="menu-logo"
-            ref={this.props.menuLogoRef}
-            onClick={this.props.toggleMenu}
+            ref={this.menuLogoRef}
+            onClick={this.toggleMenu}
           >
             &nbsp;{verticalEllipsis}&nbsp;
           </span>
           <div id="menu-wrapper">
             <div
               id="menu"
-              ref={this.props.menuRef}
-              className={this.props.menuClass}
+              ref={this.menuRef}
+              className={this.state.menuClass}
             >
               <div
                 className="menu-item"
@@ -44,13 +66,5 @@ class Header extends Component {
     );
   }
 }
-
-Header.propTypes = {
-  handleClickOrTouchStart: PropTypes.func.isRequired,
-  menuRef: PropTypes.object.isRequired,
-  menuLogoRef: PropTypes.object.isRequired,
-  toggleMenu: PropTypes.func.isRequired,
-  menuClass: PropTypes.string.isRequired,
-};
 
 export { Header };

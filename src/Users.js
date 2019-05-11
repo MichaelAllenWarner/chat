@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-class UsersWrapper extends Component {
+class Users extends Component {
   handleInput = event => {
     this.props.updateUsername(event.target.value);
   };
@@ -36,11 +36,11 @@ class UsersWrapper extends Component {
   }
 }
 
-UsersWrapper.propTypes = {
+Users.propTypes = {
   usernames: PropTypes.arrayOf(PropTypes.object).isRequired,
   usernameLabelRef: PropTypes.object.isRequired,
   handleKeyDown: PropTypes.func.isRequired,
   updateUsername: PropTypes.func.isRequired
 };
 
-export { UsersWrapper };
+export { Users };
