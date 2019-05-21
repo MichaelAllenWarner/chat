@@ -15,8 +15,7 @@
   // serve ES6+ if browser supports modules, ES5 if it doesn't
   var head = document.getElementsByTagName('head')[0];
   var testScript = document.createElement('script');
-  var filename = ('noModule' in testScript) ? 'js/main.js' : 'js/es5-main.js';
-  testScript.src = filename;
+  testScript.src = ('noModule' in testScript) ? 'js/main.js' : 'js/es5-main.js';
   head.appendChild(testScript);
 </script>
 </body>
