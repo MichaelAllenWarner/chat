@@ -82,7 +82,7 @@ function setUpWS(wss, WebSocket) {
       }
 
       // if msgObj.text isn't blank, broadcast msgObj (without privateid)
-      const thereIsText = msgObj.text.trim() ? true : false;
+      const thereIsText = !!msgObj.text.trim();
       if (thereIsText) {
         delete msgObj.privateid;
         wss.broadcast(JSON.stringify(msgObj));
