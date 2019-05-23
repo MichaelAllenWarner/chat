@@ -1,6 +1,6 @@
 # Mike’s Mobile-Friendly Chat App
 
-This single-page web app is [hosted on Heroku](https://mikes-chat-app.herokuapp.com). It’s Node/Express on the backend, and React/HTML/CSS on the front end (originally it was vanilla JavaScript/ES6+ on the front, but I’ve adapted it to React).
+This single-page web app is [hosted on Heroku](https://mikes-chat-app.herokuapp.com) (Heroku puts it in sleep mode after a period of inactivity, so it might take a few seconds to load). It’s Node/Express on the backend, and React/HTML/CSS on the front end (originally it was vanilla JavaScript/ES6+ on the front, but I’ve adapted it to React).
 
 A few noteworthy things about this project:
 
