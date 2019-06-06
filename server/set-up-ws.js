@@ -1,9 +1,9 @@
-const uniqid = require('uniqid');
-const bcrypt = require('bcrypt');
-const validateMsg = require('./validate-msg.js');
-const sendError = require('./send-error.js');
+import uniqid from 'uniqid';
+import bcrypt from 'bcrypt';
+import { validateMsg } from './validate-msg.js';
+import { sendError } from './send-error.js';
 
-module.exports = setUpWS;
+export { setUpWS };
 
 function setUpWS(wss, WebSocket) {
 

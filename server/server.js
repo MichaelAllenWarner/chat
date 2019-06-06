@@ -1,8 +1,9 @@
-const express = require('express');
-const http = require('http');
-const WebSocket = require('ws');
-const setUpWS = require('./set-up-ws.js');
-const compression = require('compression');
+import express from 'express';
+import http from 'http';
+import WebSocket from 'ws';
+import compression from 'compression';
+
+import { setUpWS } from './set-up-ws.js';
 
 const app = express();
 app.use(compression());

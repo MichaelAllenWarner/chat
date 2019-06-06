@@ -1,4 +1,4 @@
-module.exports = sendError;
+export { sendError };
 
 function sendError(ws, errorType, errorData) {
   ws.send(JSON.stringify({

@@ -1,4 +1,4 @@
-module.exports = validateMsg;
+export { validateMsg };
 
 function validateMsg(msgObj, ws) {
   return (

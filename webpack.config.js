@@ -9,6 +9,7 @@ const es5BabelOptions = {
     '@babel/preset-react',
     ['@babel/preset-env', {
       useBuiltIns: 'usage',
+      corejs: 3,
       debug: true,
       targets: {
         browsers: ['IE >= 10']
